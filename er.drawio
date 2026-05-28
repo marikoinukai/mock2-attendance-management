@@ -1,9 +1,12 @@
 <mxfile host="65bd71144e">
     <diagram id="O8Jxp-ofABKYTSBoBBcw" name="ページ1">
-        <mxGraphModel dx="1107" dy="1569" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="1086" dy="1606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
+                <mxCell id="298" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="920" y="-240" width="1180" height="800" as="geometry"/>
+                </mxCell>
                 <mxCell id="257" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;" parent="1" vertex="1">
                     <mxGeometry x="920" y="-240" width="1420" height="840" as="geometry"/>
                 </mxCell>
@@ -774,8 +777,8 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="242" value="※ UNIQUE(user_id, work_date)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" parent="1" vertex="1">
-                    <mxGeometry x="1470" y="-190" width="160" height="17" as="geometry"/>
+                <mxCell id="242" value="※ UNIQUE(user_id, work_date)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="1480" y="-190" width="140" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="264" value="※ UNIQUE(item_id, category_id)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" parent="1" vertex="1">
                     <mxGeometry x="2090" y="246.5" width="144" height="17" as="geometry"/>
@@ -799,6 +802,15 @@
                             <mxPoint x="1667" y="749"/>
                         </Array>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="297" value="user_id：申請者" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" vertex="1" parent="1">
+                    <mxGeometry x="1230" y="100" width="160" height="17" as="geometry"/>
+                </mxCell>
+                <mxCell id="299" value="approved_admin_id：承認管理者&lt;br&gt;(nullable&lt;span style=&quot;color: rgb(63, 63, 63); background-color: transparent;&quot;&gt;)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" vertex="1" parent="1">
+                    <mxGeometry x="1080" y="150" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="300" value="※ UNIQUE(email)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" vertex="1" parent="1">
+                    <mxGeometry x="1160" y="-190" width="140" height="17" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
