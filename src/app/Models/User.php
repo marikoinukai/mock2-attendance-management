@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -40,5 +41,21 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_admin' => 'boolean',
     ];
+
+    public function attendanceRecords()
+    {
+        return $this->hasMany(AttendanceRecord::class);
+    }
+
+    public function correctionRequests()
+    {
+        return $this->hasMany(AttendanceCorrectionRequest::class, 'user_id');
+    }
+
+    public function approvedCorrectionRequests()
+    {
+        return $this->hasMany(AttendanceCorrectionRequest::class, 'approved_admin_id');
+    }
 }
