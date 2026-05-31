@@ -61,4 +61,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'show'])
         ->name('admin.attendance.show');
+
+    Route::patch('/admin/attendance/{id}', [AdminAttendanceController::class, 'update'])
+        ->name('admin.attendance.update');
 });
