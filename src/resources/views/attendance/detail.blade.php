@@ -91,6 +91,58 @@
     <p>
         <a href="{{ route('attendance.list') }}">勤怠一覧へ戻る</a>
     </p>
+
+    @if (session('status'))
+        <p>{{ session('status') }}</p>
+    @endif
+
+    <h2>修正申請</h2>
+
+    <form method="POST" action="{{ route('attendance.correction.store', $attendanceRecord->id) }}">
+        @csrf
+
+        <div>
+            <label for="requested_clock_in">出勤</label>
+            <input type="time" id="requested_clock_in" name="requested_clock_in"
+                value="{{ old('requested_clock_in', \Carbon\Carbon::parse($attendanceRecord->clock_in)->format('H:i')) }}">
+            @error('requested_clock_in')
+                <p>{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div>
+            <label for="requested_clock_out">退勤</label>
+            <input type="time" id="requested_clock_out" name="requested_clock_out"
+                value="{{ old('requested_clock_out', $attendanceRecord->clock_out ? \Carbon\Carbon::parse($attendanceRecord->clock_out)->format('H:i') : '') }}">
+            @error('requested_clock_out')
+                <p>{{ $message }}</p>
+            @enderror
+        </div>
+
+        <h3>休憩</h3>
+
+        @foreach ($attendanceRecord->breaks as $index => $break)
+            <div>
+                <label>休憩開始</label>
+                <input type="time" name="requested_breaks[{{ $index }}][requested_break_start]"
+                    value="{{ old('requested_breaks.' . $index . '.requested_break_start', \Carbon\Carbon::parse($break->break_start)->format('H:i')) }}">
+
+                <label>休憩終了</label>
+                <input type="time" name="requested_breaks[{{ $index }}][requested_break_end]"
+                    value="{{ old('requested_breaks.' . $index . '.requested_break_end', $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
+            </div>
+        @endforeach
+
+        <div>
+            <label for="requested_comment">備考</label>
+            <textarea id="requested_comment" name="requested_comment">{{ old('requested_comment', $attendanceRecord->comment) }}</textarea>
+            @error('requested_comment')
+                <p>{{ $message }}</p>
+            @enderror
+        </div>
+
+        <button type="submit">修正申請を送信</button>
+    </form>
 </body>
 
 </html>
