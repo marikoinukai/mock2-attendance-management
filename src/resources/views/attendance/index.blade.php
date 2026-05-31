@@ -10,7 +10,20 @@
 <body>
     <h1>勤怠登録画面</h1>
 
-    <p>ログイン・メール認証済みユーザーだけが見られる画面です。</p>
+    <p>{{ $user->name }} さん</p>
+    <p>日付：{{ now()->format('Y年m月d日') }}</p>
+
+    @if ($attendanceRecord)
+        <p>出勤済みです。</p>
+        <p>出勤時刻：{{ $attendanceRecord->clock_in }}</p>
+    @else
+        <p>勤務外</p>
+
+        <form method="POST" action="{{ route('attendance.clock_in') }}">
+            @csrf
+            <button type="submit">出勤</button>
+        </form>
+    @endif
 </body>
 
 </html>
