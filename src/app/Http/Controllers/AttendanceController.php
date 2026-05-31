@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceBreak;
 use App\Models\AttendanceRecord;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,16 @@ class AttendanceController extends Controller
             ->where('work_date', $today)
             ->first();
 
-        return view('attendance.index', compact('user', 'attendanceRecord'));
+        $currentBreak = null;
+
+        if ($attendanceRecord) {
+            $currentBreak = $attendanceRecord->breaks()
+                ->whereNull('break_end')
+                ->latest()
+                ->first();
+        }
+
+        return view('attendance.index', compact('user', 'attendanceRecord', 'currentBreak'));
     }
 
     public function clockIn()
@@ -51,6 +61,52 @@ class AttendanceController extends Controller
             $attendanceRecord->update([
                 'clock_out' => now()->format('H:i:s'),
             ]);
+        }
+
+        return redirect()->route('attendance.index');
+    }
+
+    public function breakStart()
+    {
+        $user = auth()->user();
+        $today = now()->toDateString();
+
+        $attendanceRecord = AttendanceRecord::where('user_id', $user->id)
+            ->where('work_date', $today)
+            ->whereNull('clock_out')
+            ->first();
+
+        if ($attendanceRecord) {
+            AttendanceBreak::create([
+                'attendance_record_id' => $attendanceRecord->id,
+                'break_start' => now()->format('H:i:s'),
+            ]);
+        }
+
+        return redirect()->route('attendance.index');
+    }
+
+    public function breakEnd()
+    {
+        $user = auth()->user();
+        $today = now()->toDateString();
+
+        $attendanceRecord = AttendanceRecord::where('user_id', $user->id)
+            ->where('work_date', $today)
+            ->whereNull('clock_out')
+            ->first();
+
+        if ($attendanceRecord) {
+            $currentBreak = $attendanceRecord->breaks()
+                ->whereNull('break_end')
+                ->latest()
+                ->first();
+
+            if ($currentBreak) {
+                $currentBreak->update([
+                    'break_end' => now()->format('H:i:s'),
+                ]);
+            }
         }
 
         return redirect()->route('attendance.index');

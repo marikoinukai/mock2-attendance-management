@@ -20,19 +20,38 @@
             @csrf
             <button type="submit">出勤</button>
         </form>
-    @elseif ($attendanceRecord->clock_in && !$attendanceRecord->clock_out)
+    @elseif ($attendanceRecord->clock_out)
+        <p>退勤済み</p>
+        <p>出勤時刻：{{ $attendanceRecord->clock_in }}</p>
+        <p>退勤時刻：{{ $attendanceRecord->clock_out }}</p>
+    @elseif ($currentBreak)
+        <p>休憩中</p>
+        <p>出勤時刻：{{ $attendanceRecord->clock_in }}</p>
+        <p>休憩開始時刻：{{ $currentBreak->break_start }}</p>
+
+        <form method="POST" action="{{ route('attendance.break_end') }}">
+            @csrf
+            <button type="submit">休憩戻</button>
+        </form>
+    @else
         <p>出勤中</p>
         <p>出勤時刻：{{ $attendanceRecord->clock_in }}</p>
+
+        <form method="POST" action="{{ route('attendance.break_start') }}">
+            @csrf
+            <button type="submit">休憩入</button>
+        </form>
 
         <form method="POST" action="{{ route('attendance.clock_out') }}">
             @csrf
             <button type="submit">退勤</button>
         </form>
-    @else
-        <p>退勤済み</p>
-        <p>出勤時刻：{{ $attendanceRecord->clock_in }}</p>
-        <p>退勤時刻：{{ $attendanceRecord->clock_out }}</p>
     @endif
+
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit">ログアウト</button>
+    </form>
 </body>
 
 </html>
