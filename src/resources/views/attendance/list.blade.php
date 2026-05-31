@@ -31,6 +31,7 @@
                 <th>退勤</th>
                 <th>休憩</th>
                 <th>合計</th>
+                <th>詳細</th>
             </tr>
         </thead>
         <tbody>
@@ -69,6 +70,9 @@
                         @if (!is_null($workMinutes))
                             {{ floor($workMinutes / 60) }}:{{ sprintf('%02d', $workMinutes % 60) }}
                         @endif
+                    </td>
+                    <td>
+                        <a href="{{ route('attendance.detail', $record->id) }}">詳細</a>
                     </td>
                 </tr>
             @endforeach
