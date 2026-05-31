@@ -36,4 +36,23 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.index');
     }
+
+    public function clockOut()
+    {
+        $user = auth()->user();
+        $today = now()->toDateString();
+
+        $attendanceRecord = AttendanceRecord::where('user_id', $user->id)
+            ->where('work_date', $today)
+            ->whereNull('clock_out')
+            ->first();
+
+        if ($attendanceRecord) {
+            $attendanceRecord->update([
+                'clock_out' => now()->format('H:i:s'),
+            ]);
+        }
+
+        return redirect()->route('attendance.index');
+    }
 }
