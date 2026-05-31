@@ -5,9 +5,28 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAttendanceCorrectionRequest;
 use App\Models\AttendanceCorrectionRequest;
 use App\Models\AttendanceRecord;
+use Illuminate\Http\Request;
 
 class AttendanceCorrectionRequestController extends Controller
 {
+    public function index(Request $request)
+    {
+        $user = auth()->user();
+
+        $correctionRequests = AttendanceCorrectionRequest::with([
+            'attendanceRecord',
+            'correctionBreaks',
+        ])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return view('attendance_correction_requests.index', compact(
+            'user',
+            'correctionRequests'
+        ));
+    }
+
     public function store(StoreAttendanceCorrectionRequest $request, $id)
     {
         $attendanceRecord = AttendanceRecord::with('breaks')
