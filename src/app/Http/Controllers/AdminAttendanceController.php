@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\AttendanceRecord;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -25,5 +26,12 @@ class AdminAttendanceController extends Controller
             ->get();
 
         return view('admin.attendance.list', compact('targetDate', 'staffUsers'));
+    }
+
+    public function show($id)
+    {
+        $attendance = AttendanceRecord::with(['user', 'breaks'])->findOrFail($id);
+
+        return view('admin.attendance.detail', compact('attendance'));
     }
 }
