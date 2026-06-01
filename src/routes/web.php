@@ -78,4 +78,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     Route::get('/admin/staff/list', [AdminStaffController::class, 'index'])
         ->name('admin.staff.index');
+
+    Route::get('/admin/attendance/staff/{id}', [AdminStaffController::class, 'attendance'])
+        ->name('admin.staff.attendance');
 });

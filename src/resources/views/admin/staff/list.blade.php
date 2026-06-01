@@ -15,6 +15,7 @@
             <tr>
                 <th>名前</th>
                 <th>メールアドレス</th>
+                <th>詳細</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,9 @@
                 <tr>
                     <td>{{ $staff->name }}</td>
                     <td>{{ $staff->email }}</td>
+                    <td>
+                        <a href="{{ route('admin.staff.attendance', $staff->id) }}">詳細</a>
+                    </td>
                 </tr>
             @empty
                 <tr>
