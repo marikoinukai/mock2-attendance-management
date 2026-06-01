@@ -4,20 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceCorrectionRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class AdminCorrectionRequestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $status = $request->input('status', 'pending');
+
         $correctionRequests = AttendanceCorrectionRequest::with([
             'user',
             'attendanceRecord',
             'correctionBreaks',
         ])
+            ->where('status', $status)
             ->latest()
             ->get();
 
-        return view('admin.stamp_correction_request.list', compact('correctionRequests'));
+        return view('admin.stamp_correction_request.list', compact(
+            'correctionRequests',
+            'status'
+        ));
     }
 
     public function show($id)
