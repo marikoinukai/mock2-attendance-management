@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceCorrectionRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AdminCorrectionRequestController extends Controller

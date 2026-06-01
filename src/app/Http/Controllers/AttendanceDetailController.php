@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceRecord;
-use Illuminate\Http\Request;
 
 class AttendanceDetailController extends Controller
 {
