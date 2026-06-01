@@ -13,17 +13,21 @@ class AttendanceCorrectionRequestController extends Controller
     {
         $user = auth()->user();
 
+        $status = $request->input('status', 'pending');
+
         $correctionRequests = AttendanceCorrectionRequest::with([
             'attendanceRecord',
             'correctionBreaks',
         ])
             ->where('user_id', $user->id)
+            ->where('status', $status)
             ->latest()
             ->get();
 
         return view('attendance_correction_requests.index', compact(
             'user',
-            'correctionRequests'
+            'correctionRequests',
+            'status'
         ));
     }
 

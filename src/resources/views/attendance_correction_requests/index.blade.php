@@ -12,6 +12,29 @@
 
     <p>{{ $user->name }} さんの修正申請一覧</p>
 
+    <p>
+        <a href="{{ route('attendance_correction_requests.index', ['status' => 'pending']) }}">
+            承認待ち
+        </a>
+
+        |
+
+        <a href="{{ route('attendance_correction_requests.index', ['status' => 'approved']) }}">
+            承認済み
+        </a>
+    </p>
+
+    <p>
+        現在表示中：
+        @if ($status === 'pending')
+            承認待ち
+        @elseif ($status === 'approved')
+            承認済み
+        @else
+            {{ $status }}
+        @endif
+    </p>
+
     <table border="1">
         <thead>
             <tr>
