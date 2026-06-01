@@ -7,6 +7,7 @@ use App\Http\Controllers\AttendanceDetailController;
 use App\Http\Controllers\AttendanceCorrectionRequestController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminAttendanceController;
+use App\Http\Controllers\AdminCorrectionRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,4 +65,13 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     Route::patch('/admin/attendance/{id}', [AdminAttendanceController::class, 'update'])
         ->name('admin.attendance.update');
+
+    Route::get('/admin/stamp_correction_request/list', [AdminCorrectionRequestController::class, 'index'])
+        ->name('admin.stamp_correction_request.index');
+
+    Route::get('/admin/stamp_correction_request/approve/{id}', [AdminCorrectionRequestController::class, 'show'])
+        ->name('admin.stamp_correction_request.show');
+
+    Route::patch('/admin/stamp_correction_request/approve/{id}', [AdminCorrectionRequestController::class, 'approve'])
+        ->name('admin.stamp_correction_request.approve');
 });
