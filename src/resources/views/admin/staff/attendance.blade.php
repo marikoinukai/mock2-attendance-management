@@ -30,6 +30,16 @@
         </a>
     </p>
 
+    <p>
+        <a
+            href="{{ route('admin.staff.attendance.csv', [
+                'id' => $staff->id,
+                'month' => $targetMonth->format('Y-m'),
+            ]) }}">
+            CSV出力
+        </a>
+    </p>
+
     <table border="1">
         <thead>
             <tr>

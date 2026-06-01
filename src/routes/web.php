@@ -81,4 +81,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     Route::get('/admin/attendance/staff/{id}', [AdminStaffController::class, 'attendance'])
         ->name('admin.staff.attendance');
+
+    Route::get('/admin/attendance/staff/{id}/csv', [AdminStaffController::class, 'csv'])
+        ->name('admin.staff.attendance.csv');
 });
