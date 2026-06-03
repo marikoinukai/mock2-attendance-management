@@ -68,7 +68,7 @@ class AttendanceCorrectionRequestController extends Controller
             }
         }
 
-        $newBreak = $request->input('requested_new_break');
+        $newBreak = $request->input('requested_new_break', []);
 
         if (
             !empty($newBreak['requested_break_start']) &&
