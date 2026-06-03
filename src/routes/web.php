@@ -67,15 +67,6 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::patch('/admin/attendance/{id}', [AdminAttendanceController::class, 'update'])
         ->name('admin.attendance.update');
 
-    Route::get('/admin/stamp_correction_request/list', [AdminCorrectionRequestController::class, 'index'])
-        ->name('admin.stamp_correction_request.index');
-
-    Route::get('/admin/stamp_correction_request/approve/{id}', [AdminCorrectionRequestController::class, 'show'])
-        ->name('admin.stamp_correction_request.show');
-
-    Route::patch('/admin/stamp_correction_request/approve/{id}', [AdminCorrectionRequestController::class, 'approve'])
-        ->name('admin.stamp_correction_request.approve');
-
     Route::get('/admin/staff/list', [AdminStaffController::class, 'index'])
         ->name('admin.staff.index');
 
