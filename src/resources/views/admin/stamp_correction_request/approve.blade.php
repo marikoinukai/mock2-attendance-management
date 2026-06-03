@@ -103,7 +103,7 @@
     </table>
 
     @if ($correctionRequest->status === 'pending')
-        <form method="POST" action="{{ route('admin.stamp_correction_request.approve', $correctionRequest->id) }}">
+        <form method="POST" action="{{ route('stamp_correction_request.approve.update', $correctionRequest->id) }}">
             @csrf
             @method('PATCH')
 

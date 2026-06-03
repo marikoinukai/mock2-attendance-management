@@ -13,6 +13,10 @@ class AttendanceCorrectionRequestController extends Controller
     {
         $user = auth()->user();
 
+        if ($user->is_admin) {
+            return app(AdminCorrectionRequestController::class)->index($request);
+        }
+
         $status = $request->input('status', 'pending');
 
         $correctionRequests = AttendanceCorrectionRequest::with([

@@ -11,13 +11,13 @@
     <h1>修正申請一覧</h1>
 
     <p>
-        <a href="{{ route('admin.stamp_correction_request.index', ['status' => 'pending']) }}">
+        <a href="{{ route('attendance_correction_requests.index', ['status' => 'pending']) }}">
             承認待ち
         </a>
 
         |
 
-        <a href="{{ route('admin.stamp_correction_request.index', ['status' => 'approved']) }}">
+        <a href="{{ route('attendance_correction_requests.index', ['status' => 'approved']) }}">
             承認済み
         </a>
     </p>
@@ -72,7 +72,7 @@
                     </td>
 
                     <td>
-                        <a href="{{ route('admin.stamp_correction_request.show', $correctionRequest->id) }}">
+                        <a href="{{ route('stamp_correction_request.approve.show', $correctionRequest->id) }}">
                             詳細
                         </a>
                     </td>

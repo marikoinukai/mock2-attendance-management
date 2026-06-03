@@ -84,4 +84,10 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     Route::get('/admin/attendance/staff/{id}/csv', [AdminStaffController::class, 'csv'])
         ->name('admin.staff.attendance.csv');
+
+    Route::get('/stamp_correction_request/approve/{id}', [AdminCorrectionRequestController::class, 'show'])
+        ->name('stamp_correction_request.approve.show');
+
+    Route::patch('/stamp_correction_request/approve/{id}', [AdminCorrectionRequestController::class, 'approve'])
+        ->name('stamp_correction_request.approve.update');
 });

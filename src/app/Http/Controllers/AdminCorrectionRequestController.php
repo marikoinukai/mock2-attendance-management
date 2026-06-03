@@ -47,7 +47,7 @@ class AdminCorrectionRequestController extends Controller
 
         if ($correctionRequest->status === 'approved') {
             return redirect()
-                ->route('admin.stamp_correction_request.show', $correctionRequest->id)
+                ->route('stamp_correction_request.approve.show', $correctionRequest->id)
                 ->with('status', 'この申請はすでに承認済みです。');
         }
 
@@ -77,7 +77,7 @@ class AdminCorrectionRequestController extends Controller
         });
 
         return redirect()
-            ->route('admin.stamp_correction_request.show', $correctionRequest->id)
+            ->route('stamp_correction_request.approve.show', $correctionRequest->id)
             ->with('status', '修正申請を承認しました。');
     }
 }
