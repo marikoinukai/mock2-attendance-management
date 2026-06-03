@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceRecord;
+use App\Models\AttendanceCorrectionRequest;
 
 class AttendanceDetailController extends Controller
 {
@@ -14,6 +15,15 @@ class AttendanceDetailController extends Controller
             ->where('user_id', $user->id)
             ->findOrFail($id);
 
-        return view('attendance.detail', compact('user', 'attendanceRecord'));
+        $pendingCorrectionRequest = AttendanceCorrectionRequest::where('attendance_record_id', $attendanceRecord->id)
+            ->where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->first();
+
+        return view('attendance.detail', compact(
+            'user',
+            'attendanceRecord',
+            'pendingCorrectionRequest'
+        ));
     }
 }

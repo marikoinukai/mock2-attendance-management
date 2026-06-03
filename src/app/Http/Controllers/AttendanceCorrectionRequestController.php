@@ -41,6 +41,15 @@ class AttendanceCorrectionRequestController extends Controller
             ->where('user_id', auth()->id())
             ->findOrFail($id);
 
+        if ($attendanceRecord->correctionRequests()
+            ->where('status', 'pending')
+            ->exists()
+        ) {
+            return redirect()
+                ->route('attendance.detail', $attendanceRecord->id)
+                ->with('status', '承認待ちのため修正はできません。');
+        }
+
         $correctionRequest = AttendanceCorrectionRequest::create([
             'attendance_record_id' => $attendanceRecord->id,
             'user_id' => auth()->id(),

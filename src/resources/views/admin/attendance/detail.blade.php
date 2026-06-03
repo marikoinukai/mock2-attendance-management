@@ -14,101 +14,111 @@
         <p>{{ session('status') }}</p>
     @endif
 
-    <form method="POST" action="{{ route('admin.attendance.update', $attendance->id) }}">
-        @csrf
-        @method('PATCH')
+    @if ($pendingCorrectionRequest)
+        <p>承認待ちのため修正はできません。</p>
 
-        <table border="1">
-            <tr>
-                <th>名前</th>
-                <td>{{ $attendance->user->name }}</td>
-            </tr>
+        <p>
+            <a href="{{ route('stamp_correction_request.approve.show', $pendingCorrectionRequest->id) }}">
+                修正申請の承認画面へ
+            </a>
+        </p>
+    @else
+        <form method="POST" action="{{ route('admin.attendance.update', $attendance->id) }}">
+            @csrf
+            @method('PATCH')
 
-            <tr>
-                <th>日付</th>
-                <td>{{ $attendance->work_date->format('Y年m月d日') }}</td>
-            </tr>
-
-            <tr>
-                <th>出勤</th>
-                <td>
-                    <input type="time" name="clock_in"
-                        value="{{ old('clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}">
-
-                    @error('clock_in')
-                        <p>{{ $message }}</p>
-                    @enderror
-                </td>
-            </tr>
-
-            <tr>
-                <th>退勤</th>
-                <td>
-                    <input type="time" name="clock_out"
-                        value="{{ old('clock_out', $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '') }}">
-
-                    @error('clock_out')
-                        <p>{{ $message }}</p>
-                    @enderror
-                </td>
-            </tr>
-
-            @foreach ($attendance->breaks as $break)
+            <table border="1">
                 <tr>
-                    <th>休憩{{ $loop->iteration }}</th>
+                    <th>名前</th>
+                    <td>{{ $attendance->user->name }}</td>
+                </tr>
+
+                <tr>
+                    <th>日付</th>
+                    <td>{{ $attendance->work_date->format('Y年m月d日') }}</td>
+                </tr>
+
+                <tr>
+                    <th>出勤</th>
                     <td>
-                        <input type="time" name="breaks[{{ $break->id }}][break_start]"
-                            value="{{ old('breaks.' . $break->id . '.break_start', $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}">
+                        <input type="time" name="clock_in"
+                            value="{{ old('clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}">
 
-                        〜
-
-                        <input type="time" name="breaks[{{ $break->id }}][break_end]"
-                            value="{{ old('breaks.' . $break->id . '.break_end', $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
-
-                        @error('breaks.' . $break->id . '.break_start')
-                            <p>{{ $message }}</p>
-                        @enderror
-
-                        @error('breaks.' . $break->id . '.break_end')
+                        @error('clock_in')
                             <p>{{ $message }}</p>
                         @enderror
                     </td>
                 </tr>
-            @endforeach
 
-            <tr>
-                <th>休憩追加</th>
-                <td>
-                    <input type="time" name="new_break[break_start]" value="{{ old('new_break.break_start') }}">
+                <tr>
+                    <th>退勤</th>
+                    <td>
+                        <input type="time" name="clock_out"
+                            value="{{ old('clock_out', $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '') }}">
 
-                    〜
+                        @error('clock_out')
+                            <p>{{ $message }}</p>
+                        @enderror
+                    </td>
+                </tr>
 
-                    <input type="time" name="new_break[break_end]" value="{{ old('new_break.break_end') }}">
+                @foreach ($attendance->breaks as $break)
+                    <tr>
+                        <th>休憩{{ $loop->iteration }}</th>
+                        <td>
+                            <input type="time" name="breaks[{{ $break->id }}][break_start]"
+                                value="{{ old('breaks.' . $break->id . '.break_start', $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}">
 
-                    @error('new_break.break_start')
-                        <p>{{ $message }}</p>
-                    @enderror
+                            〜
 
-                    @error('new_break.break_end')
-                        <p>{{ $message }}</p>
-                    @enderror
-                </td>
-            </tr>
+                            <input type="time" name="breaks[{{ $break->id }}][break_end]"
+                                value="{{ old('breaks.' . $break->id . '.break_end', $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
 
-            <tr>
-                <th>備考</th>
-                <td>
-                    <textarea name="comment">{{ old('comment', $attendance->comment) }}</textarea>
+                            @error('breaks.' . $break->id . '.break_start')
+                                <p>{{ $message }}</p>
+                            @enderror
 
-                    @error('comment')
-                        <p>{{ $message }}</p>
-                    @enderror
-                </td>
-            </tr>
-        </table>
+                            @error('breaks.' . $break->id . '.break_end')
+                                <p>{{ $message }}</p>
+                            @enderror
+                        </td>
+                    </tr>
+                @endforeach
 
-        <button type="submit">修正</button>
-    </form>
+                <tr>
+                    <th>休憩追加</th>
+                    <td>
+                        <input type="time" name="new_break[break_start]" value="{{ old('new_break.break_start') }}">
+
+                        〜
+
+                        <input type="time" name="new_break[break_end]" value="{{ old('new_break.break_end') }}">
+
+                        @error('new_break.break_start')
+                            <p>{{ $message }}</p>
+                        @enderror
+
+                        @error('new_break.break_end')
+                            <p>{{ $message }}</p>
+                        @enderror
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>備考</th>
+                    <td>
+                        <textarea name="comment">{{ old('comment', $attendance->comment) }}</textarea>
+
+                        @error('comment')
+                            <p>{{ $message }}</p>
+                        @enderror
+                    </td>
+                </tr>
+            </table>
+
+            <button type="submit">修正</button>
+        </form>
+    @endif
 
     <p>
         <a href="{{ route('admin.attendance.index', ['date' => $attendance->work_date->format('Y-m-d')]) }}">

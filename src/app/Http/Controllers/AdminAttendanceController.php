@@ -33,7 +33,14 @@ class AdminAttendanceController extends Controller
     {
         $attendance = AttendanceRecord::with(['user', 'breaks'])->findOrFail($id);
 
-        return view('admin.attendance.detail', compact('attendance'));
+        $pendingCorrectionRequest = $attendance->correctionRequests()
+            ->where('status', 'pending')
+            ->first();
+
+        return view('admin.attendance.detail', compact(
+            'attendance',
+            'pendingCorrectionRequest'
+        ));
     }
 
     public function update(Request $request, $id)
@@ -50,6 +57,15 @@ class AdminAttendanceController extends Controller
         ]);
 
         $attendance = AttendanceRecord::with('breaks')->findOrFail($id);
+
+        if ($attendance->correctionRequests()
+            ->where('status', 'pending')
+            ->exists()
+        ) {
+            return redirect()
+                ->route('admin.attendance.show', $attendance->id)
+                ->with('status', '承認待ちのため修正はできません。');
+        }
 
         DB::transaction(function () use ($request, $attendance) {
             $attendance->update([
