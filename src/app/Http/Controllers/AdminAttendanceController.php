@@ -45,17 +45,6 @@ class AdminAttendanceController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'clock_in' => ['required', 'date_format:H:i'],
-            'clock_out' => ['nullable', 'date_format:H:i'],
-            'breaks' => ['nullable', 'array'],
-            'breaks.*.break_start' => ['nullable', 'date_format:H:i'],
-            'breaks.*.break_end' => ['nullable', 'date_format:H:i'],
-            'new_break.break_start' => ['nullable', 'date_format:H:i'],
-            'new_break.break_end' => ['nullable', 'date_format:H:i'],
-            'comment' => ['nullable', 'string', 'max:255'],
-        ]);
-
         $attendance = AttendanceRecord::with('breaks')->findOrFail($id);
 
         if ($attendance->correctionRequests()
@@ -66,6 +55,17 @@ class AdminAttendanceController extends Controller
                 ->route('admin.attendance.show', $attendance->id)
                 ->with('status', '承認待ちのため修正はできません。');
         }
+
+        $request->validate([
+            'clock_in' => ['required', 'date_format:H:i'],
+            'clock_out' => ['nullable', 'date_format:H:i'],
+            'breaks' => ['nullable', 'array'],
+            'breaks.*.break_start' => ['nullable', 'date_format:H:i'],
+            'breaks.*.break_end' => ['nullable', 'date_format:H:i'],
+            'new_break.break_start' => ['nullable', 'date_format:H:i'],
+            'new_break.break_end' => ['nullable', 'date_format:H:i'],
+            'comment' => ['nullable', 'string', 'max:255'],
+        ]);
 
         DB::transaction(function () use ($request, $attendance) {
             $attendance->update([
