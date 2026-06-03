@@ -68,6 +68,18 @@ class AttendanceCorrectionRequestController extends Controller
             }
         }
 
+        $newBreak = $request->input('requested_new_break');
+
+        if (
+            !empty($newBreak['requested_break_start']) &&
+            !empty($newBreak['requested_break_end'])
+        ) {
+            $correctionRequest->correctionBreaks()->create([
+                'requested_break_start' => $newBreak['requested_break_start'],
+                'requested_break_end' => $newBreak['requested_break_end'],
+            ]);
+        }
+
         return redirect()
             ->route('attendance.detail', $attendanceRecord->id)
             ->with('status', '修正申請を送信しました。');

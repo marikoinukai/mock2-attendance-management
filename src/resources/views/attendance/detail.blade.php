@@ -137,6 +137,24 @@
             @endforeach
 
             <div>
+                <label>休憩追加 開始</label>
+                <input type="time" name="requested_new_break[requested_break_start]"
+                    value="{{ old('requested_new_break.requested_break_start') }}">
+
+                <label>休憩追加 終了</label>
+                <input type="time" name="requested_new_break[requested_break_end]"
+                    value="{{ old('requested_new_break.requested_break_end') }}">
+
+                @error('requested_new_break.requested_break_start')
+                    <p>{{ $message }}</p>
+                @enderror
+
+                @error('requested_new_break.requested_break_end')
+                    <p>{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
                 <label for="requested_comment">備考</label>
                 <textarea id="requested_comment" name="requested_comment">{{ old('requested_comment', $attendanceRecord->comment) }}</textarea>
                 @error('requested_comment')
