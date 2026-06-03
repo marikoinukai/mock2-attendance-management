@@ -114,7 +114,9 @@
     @endif
 
     <p>
-        <a href="{{ route('admin.stamp_correction_request.index') }}">修正申請一覧へ戻る</a>
+        <a href="{{ route('attendance_correction_requests.index', ['status' => $correctionRequest->status]) }}">
+            修正申請一覧へ戻る
+        </a>
     </p>
 </body>
 
