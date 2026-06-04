@@ -1,96 +1,68 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>申請一覧</title>
-</head>
+@section('title', '申請一覧')
 
-<body>
-    <h1>申請一覧</h1>
+@section('content')
+    <section class="request-list">
+        <h1 class="page-title">申請一覧</h1>
 
-    <p>{{ $user->name }} さんの修正申請一覧</p>
+        <div class="request-tabs">
+            <a class="request-tabs__link {{ $status === 'pending' ? 'request-tabs__link--active' : '' }}"
+                href="{{ route('attendance_correction_requests.index', ['status' => 'pending']) }}">
+                承認待ち
+            </a>
 
-    <p>
-        <a href="{{ route('attendance_correction_requests.index', ['status' => 'pending']) }}">
-            承認待ち
-        </a>
+            <a class="request-tabs__link {{ $status === 'approved' ? 'request-tabs__link--active' : '' }}"
+                href="{{ route('attendance_correction_requests.index', ['status' => 'approved']) }}">
+                承認済み
+            </a>
+        </div>
 
-        |
-
-        <a href="{{ route('attendance_correction_requests.index', ['status' => 'approved']) }}">
-            承認済み
-        </a>
-    </p>
-
-    <p>
-        現在表示中：
-        @if ($status === 'pending')
-            承認待ち
-        @elseif ($status === 'approved')
-            承認済み
-        @else
-            {{ $status }}
-        @endif
-    </p>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>対象日</th>
-                <th>申請出勤</th>
-                <th>申請退勤</th>
-                <th>備考</th>
-                <th>状態</th>
-                <th>詳細</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($correctionRequests as $correctionRequest)
+        <table class="table request-table">
+            <thead>
                 <tr>
-                    <td>
-                        {{ $correctionRequest->attendanceRecord->work_date->format('Y/m/d') }}
-                    </td>
-                    <td>
-                        {{ \Carbon\Carbon::parse($correctionRequest->requested_clock_in)->format('H:i') }}
-                    </td>
-                    <td>
-                        {{ \Carbon\Carbon::parse($correctionRequest->requested_clock_out)->format('H:i') }}
-                    </td>
-                    <td>
-                        {{ $correctionRequest->requested_comment }}
-                    </td>
-                    <td>
-                        @if ($correctionRequest->status === 'pending')
-                            承認待ち
-                        @elseif ($correctionRequest->status === 'approved')
-                            承認済み
-                        @else
-                            {{ $correctionRequest->status }}
-                        @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('attendance.detail', $correctionRequest->attendance_record_id) }}">
-                            詳細
-                        </a>
-                    </td>
+                    <th>状態</th>
+                    <th>名前</th>
+                    <th>対象日時</th>
+                    <th>申請理由</th>
+                    <th>申請日時</th>
+                    <th>詳細</th>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="6">申請はありません。</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <p>
-        <a href="{{ route('attendance.index') }}">勤怠登録画面へ戻る</a>
-    </p>
-
-    <p>
-        <a href="{{ route('attendance.list') }}">勤怠一覧へ戻る</a>
-    </p>
-</body>
-
-</html>
+            </thead>
+            <tbody>
+                @forelse ($correctionRequests as $correctionRequest)
+                    <tr>
+                        <td>
+                            @if ($correctionRequest->status === 'pending')
+                                承認待ち
+                            @elseif ($correctionRequest->status === 'approved')
+                                承認済み
+                            @else
+                                {{ $correctionRequest->status }}
+                            @endif
+                        </td>
+                        <td>{{ $user->name }}</td>
+                        <td>
+                            {{ $correctionRequest->attendanceRecord->work_date->format('Y/m/d') }}
+                        </td>
+                        <td>
+                            {{ $correctionRequest->requested_comment }}
+                        </td>
+                        <td>
+                            {{ $correctionRequest->created_at->format('Y/m/d') }}
+                        </td>
+                        <td>
+                            <a href="{{ route('attendance.detail', $correctionRequest->attendance_record_id) }}">
+                                詳細
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6">申請はありません。</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </section>
+@endsection
