@@ -1,43 +1,36 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理者 スタッフ一覧</title>
-</head>
+@section('title', '管理者 スタッフ一覧')
 
-<body>
-    <h1>スタッフ一覧</h1>
+@section('content')
+    <section class="staff-list">
+        <h1 class="page-title">スタッフ一覧</h1>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>名前</th>
-                <th>メールアドレス</th>
-                <th>詳細</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($staffUsers as $staff)
+        <table class="table staff-table">
+            <thead>
                 <tr>
-                    <td>{{ $staff->name }}</td>
-                    <td>{{ $staff->email }}</td>
-                    <td>
-                        <a href="{{ route('admin.staff.attendance', $staff->id) }}">詳細</a>
-                    </td>
+                    <th>名前</th>
+                    <th>メールアドレス</th>
+                    <th>月次勤怠</th>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="2">スタッフはいません。</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <p>
-        <a href="{{ route('admin.attendance.index') }}">管理者勤怠一覧へ戻る</a>
-    </p>
-</body>
-
-</html>
+            </thead>
+            <tbody>
+                @forelse ($staffUsers as $staff)
+                    <tr>
+                        <td>{{ $staff->name }}</td>
+                        <td>{{ $staff->email }}</td>
+                        <td>
+                            <a href="{{ route('admin.staff.attendance', $staff->id) }}">
+                                詳細
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3">スタッフはいません。</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </section>
+@endsection
