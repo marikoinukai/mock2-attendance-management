@@ -1,57 +1,67 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勤怠登録</title>
-</head>
+@section('title', '勤怠登録')
 
-<body>
-    <h1>勤怠登録画面</h1>
+@section('content')
+    @php
+        $weekdays = ['日', '月', '火', '水', '木', '金', '土'];
 
-    <p>{{ $user->name }} さん</p>
-    <p>日付：{{ now()->format('Y年m月d日') }}</p>
+        if (!$attendanceRecord) {
+            $statusText = '勤務外';
+        } elseif ($attendanceRecord->clock_out) {
+            $statusText = '退勤済';
+        } elseif ($currentBreak) {
+            $statusText = '休憩中';
+        } else {
+            $statusText = '出勤中';
+        }
+    @endphp
 
-    @if (!$attendanceRecord)
-        <p>勤務外</p>
+    <section class="attendance-stamp">
+        <div class="attendance-stamp__status">
+            {{ $statusText }}
+        </div>
 
-        <form method="POST" action="{{ route('attendance.clock_in') }}">
-            @csrf
-            <button type="submit">出勤</button>
-        </form>
-    @elseif ($attendanceRecord->clock_out)
-        <p>退勤済み</p>
-        <p>出勤時刻：{{ $attendanceRecord->clock_in }}</p>
-        <p>退勤時刻：{{ $attendanceRecord->clock_out }}</p>
-    @elseif ($currentBreak)
-        <p>休憩中</p>
-        <p>出勤時刻：{{ $attendanceRecord->clock_in }}</p>
-        <p>休憩開始時刻：{{ $currentBreak->break_start }}</p>
+        <p class="attendance-stamp__date">
+            {{ now()->format('Y年n月j日') }}({{ $weekdays[now()->dayOfWeek] }})
+        </p>
 
-        <form method="POST" action="{{ route('attendance.break_end') }}">
-            @csrf
-            <button type="submit">休憩戻</button>
-        </form>
-    @else
-        <p>出勤中</p>
-        <p>出勤時刻：{{ $attendanceRecord->clock_in }}</p>
+        <p class="attendance-stamp__time">
+            {{ now()->format('H:i') }}
+        </p>
 
-        <form method="POST" action="{{ route('attendance.break_start') }}">
-            @csrf
-            <button type="submit">休憩入</button>
-        </form>
+        <div class="attendance-stamp__buttons">
+            @if (!$attendanceRecord)
+                <form method="POST" action="{{ route('attendance.clock_in') }}">
+                    @csrf
+                    <button class="attendance-stamp__button attendance-stamp__button--black" type="submit">
+                        出勤
+                    </button>
+                </form>
+            @elseif ($attendanceRecord->clock_out)
+                <p class="attendance-stamp__message">お疲れ様でした。</p>
+            @elseif ($currentBreak)
+                <form method="POST" action="{{ route('attendance.break_end') }}">
+                    @csrf
+                    <button class="attendance-stamp__button attendance-stamp__button--white" type="submit">
+                        休憩戻
+                    </button>
+                </form>
+            @else
+                <form method="POST" action="{{ route('attendance.clock_out') }}">
+                    @csrf
+                    <button class="attendance-stamp__button attendance-stamp__button--black" type="submit">
+                        退勤
+                    </button>
+                </form>
 
-        <form method="POST" action="{{ route('attendance.clock_out') }}">
-            @csrf
-            <button type="submit">退勤</button>
-        </form>
-    @endif
-
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit">ログアウト</button>
-    </form>
-</body>
-
-</html>
+                <form method="POST" action="{{ route('attendance.break_start') }}">
+                    @csrf
+                    <button class="attendance-stamp__button attendance-stamp__button--white" type="submit">
+                        休憩入
+                    </button>
+                </form>
+            @endif
+        </div>
+    </section>
+@endsection

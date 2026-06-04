@@ -1,170 +1,166 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勤怠詳細</title>
-</head>
+@section('title', '勤怠詳細')
 
-<body>
-    <h1>勤怠詳細</h1>
+@section('content')
+    <section class="attendance-detail">
+        <h1 class="page-title">勤怠詳細</h1>
 
-    @php
-        $breakMinutes = 0;
-        $workMinutes = null;
-        $workDate = $attendanceRecord->work_date->format('Y-m-d');
+        @if (session('status'))
+            <p class="alert-message">{{ session('status') }}</p>
+        @endif
 
-        foreach ($attendanceRecord->breaks as $break) {
-            if ($break->break_start && $break->break_end) {
-                $breakStart = \Carbon\Carbon::parse($workDate . ' ' . $break->break_start);
-                $breakEnd = \Carbon\Carbon::parse($workDate . ' ' . $break->break_end);
-                $breakMinutes += $breakStart->diffInMinutes($breakEnd);
-            }
-        }
+        @if ($pendingCorrectionRequest)
+            <div class="detail-card">
+                <table class="detail-table">
+                    <tr>
+                        <th>名前</th>
+                        <td>{{ $user->name }}</td>
+                    </tr>
+                    <tr>
+                        <th>日付</th>
+                        <td>
+                            {{ $attendanceRecord->work_date->format('Y年') }}
+                            {{ $attendanceRecord->work_date->format('n月j日') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>出勤・退勤</th>
+                        <td>
+                            {{ $attendanceRecord->clock_in ? \Carbon\Carbon::parse($attendanceRecord->clock_in)->format('H:i') : '' }}
+                            <span class="detail-table__separator">〜</span>
+                            {{ $attendanceRecord->clock_out ? \Carbon\Carbon::parse($attendanceRecord->clock_out)->format('H:i') : '' }}
+                        </td>
+                    </tr>
 
-        if ($attendanceRecord->clock_in && $attendanceRecord->clock_out) {
-            $clockIn = \Carbon\Carbon::parse($workDate . ' ' . $attendanceRecord->clock_in);
-            $clockOut = \Carbon\Carbon::parse($workDate . ' ' . $attendanceRecord->clock_out);
-            $workMinutes = $clockIn->diffInMinutes($clockOut) - $breakMinutes;
-        }
-    @endphp
+                    @foreach ($attendanceRecord->breaks as $index => $break)
+                        <tr>
+                            <th>{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
+                            <td>
+                                {{ $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '' }}
+                                <span class="detail-table__separator">〜</span>
+                                {{ $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '' }}
+                            </td>
+                        </tr>
+                    @endforeach
 
-    <table border="1">
-        <tr>
-            <th>名前</th>
-            <td>{{ $user->name }}</td>
-        </tr>
-        <tr>
-            <th>日付</th>
-            <td>{{ $attendanceRecord->work_date->format('Y年m月d日') }}</td>
-        </tr>
-        <tr>
-            <th>出勤</th>
-            <td>{{ $attendanceRecord->clock_in }}</td>
-        </tr>
-        <tr>
-            <th>退勤</th>
-            <td>{{ $attendanceRecord->clock_out ?? '' }}</td>
-        </tr>
-        <tr>
-            <th>休憩合計</th>
-            <td>
-                @if ($breakMinutes > 0)
-                    {{ floor($breakMinutes / 60) }}:{{ sprintf('%02d', $breakMinutes % 60) }}
-                @endif
-            </td>
-        </tr>
-        <tr>
-            <th>勤務合計</th>
-            <td>
-                @if (!is_null($workMinutes))
-                    {{ floor($workMinutes / 60) }}:{{ sprintf('%02d', $workMinutes % 60) }}
-                @endif
-            </td>
-        </tr>
-        <tr>
-            <th>備考</th>
-            <td>{{ $attendanceRecord->comment ?? '' }}</td>
-        </tr>
-    </table>
-
-    <h2>休憩一覧</h2>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>休憩開始</th>
-                <th>休憩終了</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($attendanceRecord->breaks as $break)
-                <tr>
-                    <td>{{ $break->break_start }}</td>
-                    <td>{{ $break->break_end ?? '' }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <p>
-        <a href="{{ route('attendance.list') }}">勤怠一覧へ戻る</a>
-    </p>
-
-    @if (session('status'))
-        <p>{{ session('status') }}</p>
-    @endif
-
-    <h2>修正申請</h2>
-
-    @if ($pendingCorrectionRequest)
-        <p>承認待ちのため修正はできません。</p>
-    @else
-        <form method="POST" action="{{ route('attendance.correction.store', $attendanceRecord->id) }}">
-            @csrf
-
-            <div>
-                <label for="requested_clock_in">出勤</label>
-                <input type="time" id="requested_clock_in" name="requested_clock_in"
-                    value="{{ old('requested_clock_in', \Carbon\Carbon::parse($attendanceRecord->clock_in)->format('H:i')) }}">
-                @error('requested_clock_in')
-                    <p>{{ $message }}</p>
-                @enderror
+                    <tr>
+                        <th>備考</th>
+                        <td>{{ $attendanceRecord->comment ?? '' }}</td>
+                    </tr>
+                </table>
             </div>
 
-            <div>
-                <label for="requested_clock_out">退勤</label>
-                <input type="time" id="requested_clock_out" name="requested_clock_out"
-                    value="{{ old('requested_clock_out', $attendanceRecord->clock_out ? \Carbon\Carbon::parse($attendanceRecord->clock_out)->format('H:i') : '') }}">
-                @error('requested_clock_out')
-                    <p>{{ $message }}</p>
-                @enderror
-            </div>
+            <p class="pending-message">*承認待ちのため修正はできません。</p>
+        @else
+            <form method="POST" action="{{ route('attendance.correction.store', $attendanceRecord->id) }}">
+                @csrf
 
-            <h3>休憩</h3>
+                <div class="detail-card">
+                    <table class="detail-table">
+                        <tr>
+                            <th>名前</th>
+                            <td>{{ $user->name }}</td>
+                        </tr>
 
-            @foreach ($attendanceRecord->breaks as $index => $break)
-                <div>
-                    <label>休憩開始</label>
-                    <input type="time" name="requested_breaks[{{ $index }}][requested_break_start]"
-                        value="{{ old('requested_breaks.' . $index . '.requested_break_start', \Carbon\Carbon::parse($break->break_start)->format('H:i')) }}">
+                        <tr>
+                            <th>日付</th>
+                            <td>
+                                {{ $attendanceRecord->work_date->format('Y年') }}
+                                {{ $attendanceRecord->work_date->format('n月j日') }}
+                            </td>
+                        </tr>
 
-                    <label>休憩終了</label>
-                    <input type="time" name="requested_breaks[{{ $index }}][requested_break_end]"
-                        value="{{ old('requested_breaks.' . $index . '.requested_break_end', $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
+                        <tr>
+                            <th>出勤・退勤</th>
+                            <td>
+                                <div class="time-input-group">
+                                    <input class="time-input" type="time" name="requested_clock_in"
+                                        value="{{ old('requested_clock_in', $attendanceRecord->clock_in ? \Carbon\Carbon::parse($attendanceRecord->clock_in)->format('H:i') : '') }}">
+
+                                    <span class="detail-table__separator">〜</span>
+
+                                    <input class="time-input" type="time" name="requested_clock_out"
+                                        value="{{ old('requested_clock_out', $attendanceRecord->clock_out ? \Carbon\Carbon::parse($attendanceRecord->clock_out)->format('H:i') : '') }}">
+                                </div>
+
+                                @error('requested_clock_in')
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
+
+                                @error('requested_clock_out')
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
+                            </td>
+                        </tr>
+
+                        @foreach ($attendanceRecord->breaks as $index => $break)
+                            <tr>
+                                <th>{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
+                                <td>
+                                    <div class="time-input-group">
+                                        <input class="time-input" type="time"
+                                            name="requested_breaks[{{ $index }}][requested_break_start]"
+                                            value="{{ old('requested_breaks.' . $index . '.requested_break_start', $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}">
+
+                                        <span class="detail-table__separator">〜</span>
+
+                                        <input class="time-input" type="time"
+                                            name="requested_breaks[{{ $index }}][requested_break_end]"
+                                            value="{{ old('requested_breaks.' . $index . '.requested_break_end', $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
+                                    </div>
+
+                                    @error('requested_breaks.' . $index . '.requested_break_start')
+                                        <p class="error-message">{{ $message }}</p>
+                                    @enderror
+
+                                    @error('requested_breaks.' . $index . '.requested_break_end')
+                                        <p class="error-message">{{ $message }}</p>
+                                    @enderror
+                                </td>
+                            </tr>
+                        @endforeach
+
+                        <tr>
+                            <th>休憩{{ $attendanceRecord->breaks->count() + 1 }}</th>
+                            <td>
+                                <div class="time-input-group">
+                                    <input class="time-input" type="time" name="requested_new_break[requested_break_start]"
+                                        value="{{ old('requested_new_break.requested_break_start') }}">
+
+                                    <span class="detail-table__separator">〜</span>
+
+                                    <input class="time-input" type="time" name="requested_new_break[requested_break_end]"
+                                        value="{{ old('requested_new_break.requested_break_end') }}">
+                                </div>
+
+                                @error('requested_new_break.requested_break_start')
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
+
+                                @error('requested_new_break.requested_break_end')
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>備考</th>
+                            <td>
+                                <textarea class="comment-input" name="requested_comment">{{ old('requested_comment', $attendanceRecord->comment) }}</textarea>
+
+                                @error('requested_comment')
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
+                            </td>
+                        </tr>
+                    </table>
                 </div>
-            @endforeach
 
-            <div>
-                <label>休憩追加 開始</label>
-                <input type="time" name="requested_new_break[requested_break_start]"
-                    value="{{ old('requested_new_break.requested_break_start') }}">
-
-                <label>休憩追加 終了</label>
-                <input type="time" name="requested_new_break[requested_break_end]"
-                    value="{{ old('requested_new_break.requested_break_end') }}">
-
-                @error('requested_new_break.requested_break_start')
-                    <p>{{ $message }}</p>
-                @enderror
-
-                @error('requested_new_break.requested_break_end')
-                    <p>{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="requested_comment">備考</label>
-                <textarea id="requested_comment" name="requested_comment">{{ old('requested_comment', $attendanceRecord->comment) }}</textarea>
-                @error('requested_comment')
-                    <p>{{ $message }}</p>
-                @enderror
-            </div>
-
-            <button type="submit">修正申請を送信</button>
-        </form>
-    @endif
-</body>
-
-</html>
+                <div class="detail-button-area">
+                    <button class="form-button" type="submit">修正</button>
+                </div>
+            </form>
+        @endif
+    </section>
+@endsection
