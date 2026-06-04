@@ -1,36 +1,33 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理者ログイン</title>
-</head>
+@section('title', '管理者ログイン')
 
-<body>
-    <h1>管理者ログイン</h1>
+@section('content')
+    <section class="auth-page">
+        <h1 class="auth-page__title">管理者ログイン</h1>
 
-    <form method="POST" action="{{ route('admin.login') }}">
-        @csrf
+        <form class="auth-form" method="POST" action="{{ route('admin.login') }}">
+            @csrf
 
-        <div>
-            <label for="email">メールアドレス</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}">
-            @error('email')
-                <p>{{ $message }}</p>
-            @enderror
-        </div>
+            <div class="auth-form__group">
+                <label class="auth-form__label" for="email">メールアドレス</label>
+                <input class="auth-form__input" type="email" id="email" name="email" value="{{ old('email') }}">
 
-        <div>
-            <label for="password">パスワード</label>
-            <input type="password" id="password" name="password">
-            @error('password')
-                <p>{{ $message }}</p>
-            @enderror
-        </div>
+                @error('email')
+                    <p class="error-message">{{ $message }}</p>
+                @enderror
+            </div>
 
-        <button type="submit">管理者ログイン</button>
-    </form>
-</body>
+            <div class="auth-form__group">
+                <label class="auth-form__label" for="password">パスワード</label>
+                <input class="auth-form__input" type="password" id="password" name="password">
 
-</html>
+                @error('password')
+                    <p class="error-message">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <button class="auth-form__button" type="submit">管理者ログインする</button>
+        </form>
+    </section>
+@endsection
