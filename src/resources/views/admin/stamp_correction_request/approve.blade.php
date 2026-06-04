@@ -1,123 +1,75 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理者 修正申請承認</title>
-</head>
+@section('title', '管理者 修正申請承認')
 
-<body>
-    <h1>修正申請承認</h1>
+@section('content')
+    <section class="attendance-detail">
+        <h1 class="page-title">勤怠詳細</h1>
 
-    @if (session('status'))
-        <p>{{ session('status') }}</p>
-    @endif
+        @if (session('status'))
+            <p class="alert-message">{{ session('status') }}</p>
+        @endif
 
-    <table border="1">
-        <tr>
-            <th>状態</th>
-            <td>
-                @if ($correctionRequest->status === 'pending')
-                    承認待ち
-                @elseif ($correctionRequest->status === 'approved')
-                    承認済み
-                @else
-                    {{ $correctionRequest->status }}
-                @endif
-            </td>
-        </tr>
-
-        <tr>
-            <th>名前</th>
-            <td>{{ $correctionRequest->user->name }}</td>
-        </tr>
-
-        <tr>
-            <th>対象日</th>
-            <td>{{ $correctionRequest->attendanceRecord->work_date->format('Y年m月d日') }}</td>
-        </tr>
-
-        <tr>
-            <th>現在の出勤</th>
-            <td>{{ $correctionRequest->attendanceRecord->clock_in }}</td>
-        </tr>
-
-        <tr>
-            <th>申請後の出勤</th>
-            <td>{{ \Carbon\Carbon::parse($correctionRequest->requested_clock_in)->format('H:i') }}</td>
-        </tr>
-
-        <tr>
-            <th>現在の退勤</th>
-            <td>{{ $correctionRequest->attendanceRecord->clock_out }}</td>
-        </tr>
-
-        <tr>
-            <th>申請後の退勤</th>
-            <td>{{ \Carbon\Carbon::parse($correctionRequest->requested_clock_out)->format('H:i') }}</td>
-        </tr>
-
-        <tr>
-            <th>申請理由</th>
-            <td>{{ $correctionRequest->requested_comment }}</td>
-        </tr>
-    </table>
-
-    <h2>現在の休憩</h2>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>休憩開始</th>
-                <th>休憩終了</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($correctionRequest->attendanceRecord->breaks as $break)
+        <div class="detail-card">
+            <table class="detail-table">
                 <tr>
-                    <td>{{ $break->break_start }}</td>
-                    <td>{{ $break->break_end }}</td>
+                    <th>名前</th>
+                    <td>{{ $correctionRequest->user->name }}</td>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
 
-    <h2>申請後の休憩</h2>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>休憩開始</th>
-                <th>休憩終了</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($correctionRequest->correctionBreaks as $break)
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($break->requested_break_start)->format('H:i') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($break->requested_break_end)->format('H:i') }}</td>
+                    <th>日付</th>
+                    <td>
+                        {{ $correctionRequest->attendanceRecord->work_date->format('Y年') }}
+                        {{ $correctionRequest->attendanceRecord->work_date->format('n月j日') }}
+                    </td>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
 
-    @if ($correctionRequest->status === 'pending')
-        <form method="POST" action="{{ route('stamp_correction_request.approve.update', $correctionRequest->id) }}">
-            @csrf
-            @method('PATCH')
+                <tr>
+                    <th>出勤・退勤</th>
+                    <td>
+                        {{ \Carbon\Carbon::parse($correctionRequest->requested_clock_in)->format('H:i') }}
+                        <span class="detail-table__separator">〜</span>
+                        {{ \Carbon\Carbon::parse($correctionRequest->requested_clock_out)->format('H:i') }}
+                    </td>
+                </tr>
 
-            <button type="submit">承認</button>
-        </form>
-    @else
-        <p>この申請は承認済みです。</p>
-    @endif
+                @foreach ($correctionRequest->correctionBreaks as $break)
+                    <tr>
+                        <th>{{ $loop->first ? '休憩' : '休憩' . $loop->iteration }}</th>
+                        <td>
+                            {{ \Carbon\Carbon::parse($break->requested_break_start)->format('H:i') }}
+                            <span class="detail-table__separator">〜</span>
+                            {{ \Carbon\Carbon::parse($break->requested_break_end)->format('H:i') }}
+                        </td>
+                    </tr>
+                @endforeach
 
-    <p>
-        <a href="{{ route('attendance_correction_requests.index', ['status' => $correctionRequest->status]) }}">
-            修正申請一覧へ戻る
-        </a>
-    </p>
-</body>
+                <tr>
+                    <th>備考</th>
+                    <td>{{ $correctionRequest->requested_comment }}</td>
+                </tr>
+            </table>
+        </div>
 
-</html>
+        @if ($correctionRequest->status === 'pending')
+            <form class="approve-form" method="POST"
+                action="{{ route('stamp_correction_request.approve.update', $correctionRequest->id) }}">
+                @csrf
+                @method('PATCH')
+
+                <button class="form-button" type="submit">承認</button>
+            </form>
+        @else
+            <div class="approved-label-area">
+                <span class="approved-label">承認済み</span>
+            </div>
+        @endif
+
+        <div class="detail-link-area">
+            <a class="back-link" href="{{ route('attendance_correction_requests.index', ['status' => $correctionRequest->status]) }}">
+                申請一覧へ戻る
+            </a>
+        </div>
+    </section>
+@endsection

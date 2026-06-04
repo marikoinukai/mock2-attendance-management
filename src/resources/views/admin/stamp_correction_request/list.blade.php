@@ -1,93 +1,73 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理者 修正申請一覧</title>
-</head>
+@section('title', '管理者 申請一覧')
 
-<body>
-    <h1>修正申請一覧</h1>
+@section('content')
+    <section class="request-list">
+        <h1 class="page-title">申請一覧</h1>
 
-    <p>
-        <a href="{{ route('attendance_correction_requests.index', ['status' => 'pending']) }}">
-            承認待ち
-        </a>
+        <div class="request-tabs">
+            <a class="request-tabs__link {{ $status === 'pending' ? 'request-tabs__link--active' : '' }}"
+                href="{{ route('attendance_correction_requests.index', ['status' => 'pending']) }}">
+                承認待ち
+            </a>
 
-        |
+            <a class="request-tabs__link {{ $status === 'approved' ? 'request-tabs__link--active' : '' }}"
+                href="{{ route('attendance_correction_requests.index', ['status' => 'approved']) }}">
+                承認済み
+            </a>
+        </div>
 
-        <a href="{{ route('attendance_correction_requests.index', ['status' => 'approved']) }}">
-            承認済み
-        </a>
-    </p>
-
-    <p>
-        現在表示中：
-        @if ($status === 'pending')
-            承認待ち
-        @elseif ($status === 'approved')
-            承認済み
-        @else
-            {{ $status }}
-        @endif
-    </p>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>状態</th>
-                <th>名前</th>
-                <th>対象日</th>
-                <th>申請内容</th>
-                <th>申請日時</th>
-                <th>詳細</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($correctionRequests as $correctionRequest)
+        <table class="table request-table">
+            <thead>
                 <tr>
-                    <td>
-                        @if ($correctionRequest->status === 'pending')
-                            承認待ち
-                        @elseif ($correctionRequest->status === 'approved')
-                            承認済み
-                        @else
-                            {{ $correctionRequest->status }}
-                        @endif
-                    </td>
-
-                    <td>{{ $correctionRequest->user->name }}</td>
-
-                    <td>
-                        {{ $correctionRequest->attendanceRecord->work_date->format('Y年m月d日') }}
-                    </td>
-
-                    <td>
-                        {{ $correctionRequest->requested_comment }}
-                    </td>
-
-                    <td>
-                        {{ $correctionRequest->created_at->format('Y年m月d日 H:i') }}
-                    </td>
-
-                    <td>
-                        <a href="{{ route('stamp_correction_request.approve.show', $correctionRequest->id) }}">
-                            詳細
-                        </a>
-                    </td>
+                    <th>状態</th>
+                    <th>名前</th>
+                    <th>対象日時</th>
+                    <th>申請理由</th>
+                    <th>申請日時</th>
+                    <th>詳細</th>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="6">修正申請はありません。</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse ($correctionRequests as $correctionRequest)
+                    <tr>
+                        <td>
+                            @if ($correctionRequest->status === 'pending')
+                                承認待ち
+                            @elseif ($correctionRequest->status === 'approved')
+                                承認済み
+                            @else
+                                {{ $correctionRequest->status }}
+                            @endif
+                        </td>
 
-    <p>
-        <a href="{{ route('admin.attendance.index') }}">管理者勤怠一覧へ戻る</a>
-    </p>
-</body>
+                        <td>{{ $correctionRequest->user->name }}</td>
 
-</html>
+                        <td>
+                            {{ $correctionRequest->attendanceRecord->work_date->format('Y/m/d') }}
+                        </td>
+
+                        <td>
+                            {{ $correctionRequest->requested_comment }}
+                        </td>
+
+                        <td>
+                            {{ $correctionRequest->created_at->format('Y/m/d') }}
+                        </td>
+
+                        <td>
+                            <a href="{{ route('stamp_correction_request.approve.show', $correctionRequest->id) }}">
+                                詳細
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6">修正申請はありません。</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </section>
+@endsection
