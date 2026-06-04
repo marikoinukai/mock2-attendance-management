@@ -26,22 +26,24 @@
             @endauth
 
             @auth
-                <nav class="header__nav">
-                    @if (auth()->user()->is_admin)
-                        <a class="header__link" href="{{ url('/admin/attendance/list') }}">勤怠一覧</a>
-                        <a class="header__link" href="{{ url('/admin/staff/list') }}">スタッフ一覧</a>
-                        <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
-                    @else
-                        <a class="header__link" href="{{ url('/attendance') }}">勤怠</a>
-                        <a class="header__link" href="{{ url('/attendance/list') }}">勤怠一覧</a>
-                        <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請</a>
-                    @endif
+                @unless (request()->routeIs('verification.notice'))
+                    <nav class="header__nav">
+                        @if (auth()->user()->is_admin)
+                            <a class="header__link" href="{{ url('/admin/attendance/list') }}">勤怠一覧</a>
+                            <a class="header__link" href="{{ url('/admin/staff/list') }}">スタッフ一覧</a>
+                            <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
+                        @else
+                            <a class="header__link" href="{{ url('/attendance') }}">勤怠</a>
+                            <a class="header__link" href="{{ url('/attendance/list') }}">勤怠一覧</a>
+                            <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請</a>
+                        @endif
 
-                    <form class="header__logout-form" action="{{ url('/logout') }}" method="POST">
-                        @csrf
-                        <button class="header__logout-button" type="submit">ログアウト</button>
-                    </form>
-                </nav>
+                        <form class="header__logout-form" action="{{ url('/logout') }}" method="POST">
+                            @csrf
+                            <button class="header__logout-button" type="submit">ログアウト</button>
+                        </form>
+                    </nav>
+                @endunless
             @endauth
         </div>
     </header>

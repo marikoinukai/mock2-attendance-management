@@ -1,38 +1,37 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン</title>
-</head>
+@section('title', 'ログイン')
 
-<body>
-    <h1>ログイン</h1>
+@section('content')
+    <section class="auth-page">
+        <h1 class="auth-page__title">ログイン</h1>
 
-    <form method="POST" action="{{ url('/login') }}">
-        @csrf
+        <form class="auth-form" method="POST" action="{{ url('/login') }}">
+            @csrf
 
-        <div>
-            <label for="email">メールアドレス</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}">
-            @error('email')
-                <p>{{ $message }}</p>
-            @enderror
+            <div class="auth-form__group">
+                <label class="auth-form__label" for="email">メールアドレス</label>
+                <input class="auth-form__input" type="email" id="email" name="email" value="{{ old('email') }}">
+
+                @error('email')
+                    <p class="error-message">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="auth-form__group">
+                <label class="auth-form__label" for="password">パスワード</label>
+                <input class="auth-form__input" type="password" id="password" name="password">
+
+                @error('password')
+                    <p class="error-message">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <button class="auth-form__button" type="submit">ログインする</button>
+        </form>
+
+        <div class="auth-page__link-area">
+            <a class="auth-page__link" href="{{ url('/register') }}">会員登録はこちら</a>
         </div>
-
-        <div>
-            <label for="password">パスワード</label>
-            <input type="password" id="password" name="password">
-            @error('password')
-                <p>{{ $message }}</p>
-            @enderror
-        </div>
-
-        <button type="submit">ログインする</button>
-    </form>
-
-    <a href="{{ url('/register') }}">会員登録はこちら</a>
-</body>
-
-</html>
+    </section>
+@endsection

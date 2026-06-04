@@ -1,33 +1,34 @@
-<!DOCTYPE html>
-<html lang="ja">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>メール認証</title>
-</head>
+@section('title', 'メール認証')
 
-<body>
-    <h1>メール認証をしてください</h1>
+@section('content')
+    <section class="verify-page">
+        <div class="verify-card">
+            <p class="verify-card__text">
+                登録していただいたメールアドレスに認証メールを送付しました。
+            </p>
 
-    <p>
-        登録したメールアドレスに認証メールを送信しました。
-        メール内のリンクをクリックして、認証を完了してください。
-    </p>
+            <p class="verify-card__text">
+                メール認証を完了してください。
+            </p>
 
-    @if (session('status') === 'verification-link-sent')
-        <p>認証メールを再送信しました。</p>
-    @endif
+            <div class="verify-card__button-area">
+                <a class="verify-card__auth-link" href="http://localhost:8025" target="_blank">
+                    認証はこちらから
+                </a>
+            </div>
 
-    <form method="POST" action="{{ route('verification.send') }}">
-        @csrf
-        <button type="submit">認証メールを再送信する</button>
-    </form>
+            @if (session('status') === 'verification-link-sent')
+                <p class="alert-message">認証メールを再送信しました。</p>
+            @endif
 
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit">ログアウト</button>
-    </form>
-</body>
-
-</html>
+            <form class="verify-card__form" method="POST" action="{{ route('verification.send') }}">
+                @csrf
+                <button class="verify-card__resend-button" type="submit">
+                    認証メールを再送する
+                </button>
+            </form>
+        </div>
+    </section>
+@endsection

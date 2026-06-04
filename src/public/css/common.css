@@ -437,3 +437,141 @@ button {
     font-weight: bold;
     text-align: center;
 }
+
+.auth-page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding-top: 24px;
+}
+
+.auth-page__title {
+    margin: 0 0 48px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.auth-form__group {
+    margin-bottom: 28px;
+}
+
+.auth-form__label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.auth-form__input {
+    width: 100%;
+    height: 48px;
+    padding: 8px 12px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 16px;
+}
+
+.auth-form__button {
+    width: 100%;
+    margin-top: 32px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #000;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.auth-page__link-area {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.auth-page__link {
+    color: #0073cc;
+    font-size: 16px;
+}
+
+.verify-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-top: 80px;
+}
+
+.verify-card {
+    text-align: center;
+}
+
+.verify-card__text {
+    margin: 0 0 0px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.verify-card__form {
+    margin-top: 44px;
+}
+
+.verify-card__button {
+    padding: 10px 32px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background: #fff;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.verify-card__logout-button {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #0073cc;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.verify-card__resend-button {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #0073cc;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.verify-card__button-area {
+    margin-top: 44px;
+}
+
+.verify-card__auth-link {
+    display: inline-block;
+    padding: 10px 32px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background: #f5f5f5;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.verify-card__resend-button {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #0073cc;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.verify-card__auth-link {
+    background: #d9d9d9;
+    border: 1px solid #000;
+    color: #000;
+    font-size: 20px;
+    font-weight: bold;
+}
