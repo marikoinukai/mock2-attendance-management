@@ -33,9 +33,17 @@
                             <a class="header__link" href="{{ url('/admin/staff/list') }}">スタッフ一覧</a>
                             <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
                         @else
-                            <a class="header__link" href="{{ url('/attendance') }}">勤怠</a>
-                            <a class="header__link" href="{{ url('/attendance/list') }}">勤怠一覧</a>
-                            <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請</a>
+                            @if (request()->routeIs('attendance.index') &&
+                                    isset($attendanceRecord) &&
+                                    $attendanceRecord &&
+                                    $attendanceRecord->clock_out)
+                                <a class="header__link" href="{{ url('/attendance/list') }}">今月の出勤一覧</a>
+                                <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
+                            @else
+                                <a class="header__link" href="{{ url('/attendance') }}">勤怠</a>
+                                <a class="header__link" href="{{ url('/attendance/list') }}">勤怠一覧</a>
+                                <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請</a>
+                            @endif
                         @endif
 
                         <form class="header__logout-form" action="{{ url('/logout') }}" method="POST">
