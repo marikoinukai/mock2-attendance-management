@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 
 class AdminStaffController extends Controller
@@ -22,22 +23,15 @@ class AdminStaffController extends Controller
         $staff = User::where('is_admin', false)->findOrFail($id);
 
         $targetMonth = $request->input('month')
-            ? Carbon::parse($request->input('month') . '-01')
-            : now();
+            ? Carbon::parse($request->input('month') . '-01')->startOfMonth()
+            : now()->startOfMonth();
 
-        $attendanceRecords = $staff->attendanceRecords()
-            ->with('breaks')
-            ->whereBetween('work_date', [
-                $targetMonth->copy()->startOfMonth()->toDateString(),
-                $targetMonth->copy()->endOfMonth()->toDateString(),
-            ])
-            ->orderBy('work_date')
-            ->get();
+        $attendanceRows = $this->makeAttendanceRows($staff, $targetMonth);
 
         return view('admin.staff.attendance', compact(
             'staff',
             'targetMonth',
-            'attendanceRecords'
+            'attendanceRows'
         ));
     }
 
@@ -46,17 +40,10 @@ class AdminStaffController extends Controller
         $staff = User::where('is_admin', false)->findOrFail($id);
 
         $targetMonth = $request->input('month')
-            ? Carbon::parse($request->input('month') . '-01')
-            : now();
+            ? Carbon::parse($request->input('month') . '-01')->startOfMonth()
+            : now()->startOfMonth();
 
-        $attendanceRecords = $staff->attendanceRecords()
-            ->with('breaks')
-            ->whereBetween('work_date', [
-                $targetMonth->copy()->startOfMonth()->toDateString(),
-                $targetMonth->copy()->endOfMonth()->toDateString(),
-            ])
-            ->orderBy('work_date')
-            ->get();
+        $attendanceRows = $this->makeAttendanceRows($staff, $targetMonth);
 
         $fileName = $staff->name . '_' . $targetMonth->format('Y-m') . '_attendance.csv';
 
@@ -65,10 +52,9 @@ class AdminStaffController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ];
 
-        $callback = function () use ($attendanceRecords) {
+        $callback = function () use ($attendanceRows) {
             $file = fopen('php://output', 'w');
 
-            // Excelで文字化けしにくくするためのBOM
             echo "\xEF\xBB\xBF";
 
             fputcsv($file, [
@@ -79,29 +65,34 @@ class AdminStaffController extends Controller
                 '合計',
             ]);
 
-            foreach ($attendanceRecords as $record) {
+            foreach ($attendanceRows as $row) {
+                $date = $row['date'];
+                $record = $row['record'];
+
                 $breakMinutes = 0;
                 $workMinutes = null;
-                $workDate = $record->work_date->format('Y-m-d');
+                $workDate = $date->format('Y-m-d');
 
-                foreach ($record->breaks as $break) {
-                    if ($break->break_start && $break->break_end) {
-                        $breakStart = Carbon::parse($workDate . ' ' . $break->break_start);
-                        $breakEnd = Carbon::parse($workDate . ' ' . $break->break_end);
-                        $breakMinutes += $breakStart->diffInMinutes($breakEnd);
+                if ($record) {
+                    foreach ($record->breaks as $break) {
+                        if ($break->break_start && $break->break_end) {
+                            $breakStart = Carbon::parse($workDate . ' ' . $break->break_start);
+                            $breakEnd = Carbon::parse($workDate . ' ' . $break->break_end);
+                            $breakMinutes += $breakStart->diffInMinutes($breakEnd);
+                        }
+                    }
+
+                    if ($record->clock_in && $record->clock_out) {
+                        $clockIn = Carbon::parse($workDate . ' ' . $record->clock_in);
+                        $clockOut = Carbon::parse($workDate . ' ' . $record->clock_out);
+                        $workMinutes = $clockIn->diffInMinutes($clockOut) - $breakMinutes;
                     }
                 }
 
-                if ($record->clock_in && $record->clock_out) {
-                    $clockIn = Carbon::parse($workDate . ' ' . $record->clock_in);
-                    $clockOut = Carbon::parse($workDate . ' ' . $record->clock_out);
-                    $workMinutes = $clockIn->diffInMinutes($clockOut) - $breakMinutes;
-                }
-
                 fputcsv($file, [
-                    $record->work_date->format('Y/m/d'),
-                    $record->clock_in,
-                    $record->clock_out,
+                    $date->format('Y/m/d'),
+                    $record && $record->clock_in ? Carbon::parse($record->clock_in)->format('H:i') : '',
+                    $record && $record->clock_out ? Carbon::parse($record->clock_out)->format('H:i') : '',
                     $breakMinutes > 0 ? floor($breakMinutes / 60) . ':' . sprintf('%02d', $breakMinutes % 60) : '',
                     !is_null($workMinutes) ? floor($workMinutes / 60) . ':' . sprintf('%02d', $workMinutes % 60) : '',
                 ]);
@@ -111,5 +102,38 @@ class AdminStaffController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    private function makeAttendanceRows(User $staff, Carbon $targetMonth)
+    {
+        $startOfMonth = $targetMonth->copy()->startOfMonth();
+        $endOfMonth = $targetMonth->copy()->endOfMonth();
+
+        $attendanceRecords = $staff->attendanceRecords()
+            ->with('breaks')
+            ->whereBetween('work_date', [
+                $startOfMonth->toDateString(),
+                $endOfMonth->toDateString(),
+            ])
+            ->orderBy('work_date')
+            ->get()
+            ->keyBy(function ($record) {
+                return $record->work_date->format('Y-m-d');
+            });
+
+        $period = CarbonPeriod::create($startOfMonth, $endOfMonth);
+
+        $attendanceRows = [];
+
+        foreach ($period as $date) {
+            $dateKey = $date->format('Y-m-d');
+
+            $attendanceRows[] = [
+                'date' => $date->copy(),
+                'record' => $attendanceRecords->get($dateKey),
+            ];
+        }
+
+        return $attendanceRows;
     }
 }

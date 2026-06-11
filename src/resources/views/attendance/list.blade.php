@@ -34,23 +34,28 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($attendanceRecords as $record)
+                @foreach ($attendanceRows as $row)
                     @php
+                        $date = $row['date'];
+                        $record = $row['record'];
+
                         $breakMinutes = 0;
-                        $workDate = $record->work_date->format('Y-m-d');
+                        $workDate = $date->format('Y-m-d');
                         $weekdays = ['日', '月', '火', '水', '木', '金', '土'];
 
-                        foreach ($record->breaks as $break) {
-                            if ($break->break_start && $break->break_end) {
-                                $breakStart = \Carbon\Carbon::parse($workDate . ' ' . $break->break_start);
-                                $breakEnd = \Carbon\Carbon::parse($workDate . ' ' . $break->break_end);
-                                $breakMinutes += $breakStart->diffInMinutes($breakEnd);
+                        if ($record) {
+                            foreach ($record->breaks as $break) {
+                                if ($break->break_start && $break->break_end) {
+                                    $breakStart = \Carbon\Carbon::parse($workDate . ' ' . $break->break_start);
+                                    $breakEnd = \Carbon\Carbon::parse($workDate . ' ' . $break->break_end);
+                                    $breakMinutes += $breakStart->diffInMinutes($breakEnd);
+                                }
                             }
                         }
 
                         $workMinutes = null;
 
-                        if ($record->clock_in && $record->clock_out) {
+                        if ($record && $record->clock_in && $record->clock_out) {
                             $clockIn = \Carbon\Carbon::parse($workDate . ' ' . $record->clock_in);
                             $clockOut = \Carbon\Carbon::parse($workDate . ' ' . $record->clock_out);
                             $workMinutes = $clockIn->diffInMinutes($clockOut) - $breakMinutes;
@@ -59,13 +64,13 @@
 
                     <tr>
                         <td>
-                            {{ $record->work_date->format('m/d') }}({{ $weekdays[$record->work_date->dayOfWeek] }})
+                            {{ $date->format('m/d') }}({{ $weekdays[$date->dayOfWeek] }})
                         </td>
                         <td>
-                            {{ $record->clock_in ? \Carbon\Carbon::parse($record->clock_in)->format('H:i') : '' }}
+                            {{ $record && $record->clock_in ? \Carbon\Carbon::parse($record->clock_in)->format('H:i') : '' }}
                         </td>
                         <td>
-                            {{ $record->clock_out ? \Carbon\Carbon::parse($record->clock_out)->format('H:i') : '' }}
+                            {{ $record && $record->clock_out ? \Carbon\Carbon::parse($record->clock_out)->format('H:i') : '' }}
                         </td>
                         <td>
                             @if ($breakMinutes > 0)
@@ -78,7 +83,9 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('attendance.detail', $record->id) }}">詳細</a>
+                            @if ($record)
+                                <a href="{{ route('attendance.detail', $record->id) }}">詳細</a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

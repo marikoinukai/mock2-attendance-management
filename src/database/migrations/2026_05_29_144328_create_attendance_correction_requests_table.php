@@ -19,7 +19,7 @@ class CreateAttendanceCorrectionRequestsTable extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->time('requested_clock_in');
             $table->time('requested_clock_out');
-            $table->string('requested_comment');
+            $table->text('requested_comment');
             $table->string('status')->default('pending');
             $table->foreignId('approved_admin_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('approved_at')->nullable();

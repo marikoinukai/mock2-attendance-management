@@ -1,0 +1,376 @@
+[1mdiff --git a/src/app/Http/Requests/AdminAttendanceUpdateRequest.php b/src/app/Http/Requests/AdminAttendanceUpdateRequest.php[m
+[1mindex 281bdcd..70c7ba7 100755[m
+[1m--- a/src/app/Http/Requests/AdminAttendanceUpdateRequest.php[m
+[1m+++ b/src/app/Http/Requests/AdminAttendanceUpdateRequest.php[m
+[36m@@ -6,78 +6,119 @@[m
+ [m
+ class AdminAttendanceUpdateRequest extends FormRequest[m
+ {[m
+[31m-    /**[m
+[31m-     * Determine if the user is authorized to make this request.[m
+[31m-     *[m
+[31m-     * @return bool[m
+[31m-     */[m
+     public function authorize()[m
+     {[m
+         return true;[m
+     }[m
+ [m
+[31m-    /**[m
+[31m-     * Get the validation rules that apply to the request.[m
+[31m-     *[m
+[31m-     * @return array[m
+[31m-     */[m
+     public function rules()[m
+     {[m
+         return [[m
+[31m-            'clock_in' => [[m
+[31m-                'required',[m
+[31m-                'date_format:H:i',[m
+[31m-            ],[m
+[31m-            'clock_out' => [[m
+[31m-                'required',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after:clock_in',[m
+[31m-            ],[m
+[31m-            'comment' => [[m
+[31m-                'required',[m
+[31m-                'string',[m
+[31m-                'max:255',[m
+[31m-            ],[m
+[31m-[m
+[31m-            'breaks' => [[m
+[31m-                'nullable',[m
+[31m-                'array',[m
+[31m-            ],[m
+[31m-            'breaks.*.break_start' => [[m
+[31m-                'nullable',[m
+[31m-                'required_with:breaks.*.break_end',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after_or_equal:clock_in',[m
+[31m-                'before_or_equal:clock_out',[m
+[31m-            ],[m
+[31m-            'breaks.*.break_end' => [[m
+[31m-                'nullable',[m
+[31m-                'required_with:breaks.*.break_start',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after:breaks.*.break_start',[m
+[31m-                'after_or_equal:clock_in',[m
+[31m-                'before_or_equal:clock_out',[m
+[31m-            ],[m
+[31m-[m
+[31m-            'new_break' => [[m
+[31m-                'nullable',[m
+[31m-                'array',[m
+[31m-            ],[m
+[31m-            'new_break.break_start' => [[m
+[31m-                'nullable',[m
+[31m-                'required_with:new_break.break_end',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after_or_equal:clock_in',[m
+[31m-                'before_or_equal:clock_out',[m
+[31m-            ],[m
+[31m-            'new_break.break_end' => [[m
+[31m-                'nullable',[m
+[31m-                'required_with:new_break.break_start',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after:new_break.break_start',[m
+[31m-                'after_or_equal:clock_in',[m
+[31m-                'before_or_equal:clock_out',[m
+[31m-            ],[m
+[32m+[m[32m            'clock_in' => ['required', 'date_format:H:i'],[m
+[32m+[m[32m            'clock_out' => ['required', 'date_format:H:i'],[m
+[32m+[m
+[32m+[m[32m            'breaks' => ['nullable', 'array'],[m
+[32m+[m[32m            'breaks.*.break_start' => ['nullable', 'date_format:H:i'],[m
+[32m+[m[32m            'breaks.*.break_end' => ['nullable', 'date_format:H:i'],[m
+[32m+[m
+[32m+[m[32m            'new_break' => ['nullable', 'array'],[m
+[32m+[m[32m            'new_break.break_start' => ['nullable', 'date_format:H:i'],[m
+[32m+[m[32m            'new_break.break_end' => ['nullable', 'date_format:H:i'],[m
+[32m+[m
+[32m+[m[32m            'comment' => ['required', 'string'],[m
+[32m+[m[32m        ];[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public function withValidator($validator)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        $validator->after(function ($validator) {[m
+[32m+[m[32m            $toMinutes = function ($time) {[m
+[32m+[m[32m                if (is_null($time) || $time === '') {[m
+[32m+[m[32m                    return null;[m
+[32m+[m[32m                }[m
+[32m+[m
+[32m+[m[32m                if (!preg_match('/^\d{2}:\d{2}$/', $time)) {[m
+[32m+[m[32m                    return null;[m
+[32m+[m[32m                }[m
+[32m+[m
+[32m+[m[32m                [$hour, $minute] = explode(':', $time);[m
+[32m+[m
+[32m+[m[32m                return ((int) $hour * 60) + (int) $minute;[m
+[32m+[m[32m            };[m
+[32m+[m
+[32m+[m[32m            $clockIn = $toMinutes($this->input('clock_in'));[m
+[32m+[m[32m            $clockOut = $toMinutes($this->input('clock_out'));[m
+[32m+[m
+[32m+[m[32m            if (is_null($clockIn) || is_null($clockOut)) {[m
+[32m+[m[32m                return;[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            if ($clockIn > $clockOut) {[m
+[32m+[m[32m                $validator->errors()->add([m
+[32m+[m[32m                    'clock_in',[m
+[32m+[m[32m                    '出勤時間もしくは退勤時間が不適切な値です'[m
+[32m+[m[32m                );[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            $checkBreak = function ($breakStart, $breakEnd, $breakStartKey, $breakEndKey) use ($validator, $toMinutes, $clockIn, $clockOut) {[m
+[32m+[m[32m                $breakStartMinutes = $toMinutes($breakStart);[m
+[32m+[m[32m                $breakEndMinutes = $toMinutes($breakEnd);[m
+[32m+[m
+[32m+[m[32m                if (!is_null($breakStartMinutes)) {[m
+[32m+[m[32m                    if ($breakStartMinutes < $clockIn || $breakStartMinutes > $clockOut) {[m
+[32m+[m[32m                        $validator->errors()->add([m
+[32m+[m[32m                            $breakStartKey,[m
+[32m+[m[32m                            '休憩時間が不適切な値です'[m
+[32m+[m[32m                        );[m
+[32m+[m[32m                    }[m
+[32m+[m[32m                }[m
+[32m+[m
+[32m+[m[32m                if (!is_null($breakEndMinutes)) {[m
+[32m+[m[32m                    if ($breakEndMinutes > $clockOut) {[m
+[32m+[m[32m                        $validator->errors()->add([m
+[32m+[m[32m                            $breakEndKey,[m
+[32m+[m[32m                            '休憩時間もしくは退勤時間が不適切な値です'[m
+[32m+[m[32m                        );[m
+[32m+[m[32m                    }[m
+[32m+[m[32m                }[m
+[32m+[m[32m            };[m
+[32m+[m
+[32m+[m[32m            foreach ($this->input('breaks', []) as $breakId => $break) {[m
+[32m+[m[32m                $checkBreak([m
+[32m+[m[32m                    $break['break_start'] ?? null,[m
+[32m+[m[32m                    $break['break_end'] ?? null,[m
+[32m+[m[32m                    "breaks.{$breakId}.break_start",[m
+[32m+[m[32m                    "breaks.{$breakId}.break_end"[m
+[32m+[m[32m                );[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            $newBreak = $this->input('new_break', []);[m
+[32m+[m
+[32m+[m[32m            $checkBreak([m
+[32m+[m[32m                $newBreak['break_start'] ?? null,[m
+[32m+[m[32m                $newBreak['break_end'] ?? null,[m
+[32m+[m[32m                'new_break.break_start',[m
+[32m+[m[32m                'new_break.break_end'[m
+[32m+[m[32m            );[m
+[32m+[m[32m        });[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public function messages()[m
+[32m+[m[32m    {[m
+[32m+[m[32m        return [[m
+[32m+[m[32m            'clock_in.required' => '出勤時間を入力してください。',[m
+[32m+[m[32m            'clock_in.date_format' => '出勤時間はHH:MM形式で入力してください。',[m
+[32m+[m
+[32m+[m[32m            'clock_out.required' => '退勤時間を入力してください。',[m
+[32m+[m[32m            'clock_out.date_format' => '退勤時間はHH:MM形式で入力してください。',[m
+[32m+[m
+[32m+[m[32m            'breaks.*.break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください。',[m
+[32m+[m[32m            'breaks.*.break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください。',[m
+[32m+[m
+[32m+[m[32m            'new_break.break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください。',[m
+[32m+[m[32m            'new_break.break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください。',[m
+[32m+[m
+[32m+[m[32m            'comment.required' => '備考を記入してください',[m
+         ];[m
+     }[m
+ }[m
+[1mdiff --git a/src/app/Http/Requests/StoreAttendanceCorrectionRequest.php b/src/app/Http/Requests/StoreAttendanceCorrectionRequest.php[m
+[1mindex b7396d6..1850a7e 100755[m
+[1m--- a/src/app/Http/Requests/StoreAttendanceCorrectionRequest.php[m
+[1m+++ b/src/app/Http/Requests/StoreAttendanceCorrectionRequest.php[m
+[36m@@ -6,78 +6,119 @@[m
+ [m
+ class StoreAttendanceCorrectionRequest extends FormRequest[m
+ {[m
+[31m-    /**[m
+[31m-     * Determine if the user is authorized to make this request.[m
+[31m-     *[m
+[31m-     * @return bool[m
+[31m-     */[m
+     public function authorize()[m
+     {[m
+         return true;[m
+     }[m
+ [m
+[31m-    /**[m
+[31m-     * Get the validation rules that apply to the request.[m
+[31m-     *[m
+[31m-     * @return array[m
+[31m-     */[m
+     public function rules()[m
+     {[m
+         return [[m
+[31m-            'requested_clock_in' => [[m
+[31m-                'required',[m
+[31m-                'date_format:H:i',[m
+[31m-            ],[m
+[31m-            'requested_clock_out' => [[m
+[31m-                'required',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after:requested_clock_in',[m
+[31m-            ],[m
+[31m-            'requested_comment' => [[m
+[31m-                'required',[m
+[31m-                'string',[m
+[31m-                'max:255',[m
+[31m-            ],[m
+[31m-[m
+[31m-            'requested_breaks' => [[m
+[31m-                'nullable',[m
+[31m-                'array',[m
+[31m-            ],[m
+[31m-            'requested_breaks.*.requested_break_start' => [[m
+[31m-                'nullable',[m
+[31m-                'required_with:requested_breaks.*.requested_break_end',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after_or_equal:requested_clock_in',[m
+[31m-                'before_or_equal:requested_clock_out',[m
+[31m-            ],[m
+[31m-            'requested_breaks.*.requested_break_end' => [[m
+[31m-                'nullable',[m
+[31m-                'required_with:requested_breaks.*.requested_break_start',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after:requested_breaks.*.requested_break_start',[m
+[31m-                'after_or_equal:requested_clock_in',[m
+[31m-                'before_or_equal:requested_clock_out',[m
+[31m-            ],[m
+[31m-[m
+[31m-            'requested_new_break' => [[m
+[31m-                'nullable',[m
+[31m-                'array',[m
+[31m-            ],[m
+[31m-            'requested_new_break.requested_break_start' => [[m
+[31m-                'nullable',[m
+[31m-                'required_with:requested_new_break.requested_break_end',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after_or_equal:requested_clock_in',[m
+[31m-                'before_or_equal:requested_clock_out',[m
+[31m-            ],[m
+[31m-            'requested_new_break.requested_break_end' => [[m
+[31m-                'nullable',[m
+[31m-                'required_with:requested_new_break.requested_break_start',[m
+[31m-                'date_format:H:i',[m
+[31m-                'after:requested_new_break.requested_break_start',[m
+[31m-                'after_or_equal:requested_clock_in',[m
+[31m-                'before_or_equal:requested_clock_out',[m
+[31m-            ],[m
+[32m+[m[32m            'requested_clock_in' => ['required', 'date_format:H:i'],[m
+[32m+[m[32m            'requested_clock_out' => ['required', 'date_format:H:i'],[m
+[32m+[m
+[32m+[m[32m            'requested_breaks' => ['nullable', 'array'],[m
+[32m+[m[32m            'requested_breaks.*.requested_break_start' => ['nullable', 'date_format:H:i'],[m
+[32m+[m[32m            'requested_breaks.*.requested_break_end' => ['nullable', 'date_format:H:i'],[m
+[32m+[m
+[32m+[m[32m            'requested_new_break' => ['nullable', 'array'],[m
+[32m+[m[32m            'requested_new_break.requested_break_start' => ['nullable', 'date_format:H:i'],[m
+[32m+[m[32m            'requested_new_break.requested_break_end' => ['nullable', 'date_format:H:i'],[m
+[32m+[m
+[32m+[m[32m            'requested_comment' => ['required', 'string'],[m
+[32m+[m[32m        ];[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public function withValidator($validator)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        $validator->after(function ($validator) {[m
+[32m+[m[32m            $toMinutes = function ($time) {[m
+[32m+[m[32m                if (is_null($time) || $time === '') {[m
+[32m+[m[32m                    return null;[m
+[32m+[m[32m                }[m
+[32m+[m
+[32m+[m[32m                if (!preg_match('/^\d{2}:\d{2}$/', $time)) {[m
+[32m+[m[32m                    return null;[m
+[32m+[m[32m                }[m
+[32m+[m
+[32m+[m[32m                [$hour, $minute] = explode(':', $time);[m
+[32m+[m
+[32m+[m[32m                return ((int) $hour * 60) + (int) $minute;[m
+[32m+[m[32m            };[m
+[32m+[m
+[32m+[m[32m            $clockIn = $toMinutes($this->input('requested_clock_in'));[m
+[32m+[m[32m            $clockOut = $toMinutes($this->input('requested_clock_out'));[m
+[32m+[m
+[32m+[m[32m            if (is_null($clockIn) || is_null($clockOut)) {[m
+[32m+[m[32m                return;[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            if ($clockIn > $clockOut) {[m
+[32m+[m[32m                $validator->errors()->add([m
+[32m+[m[32m                    'requested_clock_in',[m
+[32m+[m[32m                    '出勤時間もしくは退勤時間が不適切な値です'[m
+[32m+[m[32m                );[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            $checkBreak = function ($breakStart, $breakEnd, $breakStartKey, $breakEndKey) use ($validator, $toMinutes, $clockIn, $clockOut) {[m
+[32m+[m[32m                $breakStartMinutes = $toMinutes($breakStart);[m
+[32m+[m[32m                $breakEndMinutes = $toMinutes($breakEnd);[m
+[32m+[m
+[32m+[m[32m                if (!is_null($breakStartMinutes)) {[m
+[32m+[m[32m                    if ($breakStartMinutes < $clockIn || $breakStartMinutes > $clockOut) {[m
+[32m+[m[32m                        $validator->errors()->add([m
+[32m+[m[32m                            $breakStartKey,[m
+[32m+[m[32m                            '休憩時間が不適切な値です'[m
+[32m+[m[32m                        );[m
+[32m+[m[32m                    }[m
+[32m+[m[32m                }[m
+[32m+[m
+[32m+[m[32m                if (!is_null($breakEndMinutes)) {[m
+[32m+[m[32m                    if ($breakEndMinutes > $clockOut) {[m
+[32m+[m[32m                        $validator->errors()->add([m
+[32m+[m[32m                            $breakEndKey,[m
+[32m+[m[32m                            '休憩時間もしくは退勤時間が不適切な値です'[m
+[32m+[m[32m                        );[m
+[32m+[m[32m                    }[m
+[32m+[m[32m                }[m
+[32m+[m[32m            };[m
+[32m+[m
+[32m+[m[32m            foreach ($this->input('requested_breaks', []) as $index => $break) {[m
+[32m+[m[32m                $checkBreak([m
+[32m+[m[32m                    $break['requested_break_start'] ?? null,[m
+[32m+[m[32m                    $break['requested_break_end'] ?? null,[m
+[32m+[m[32m                    "requested_breaks.{$index}.requested_break_start",[m
+[32m+[m[32m                    "requested_breaks.{$index}.requested_break_end"[m
+[32m+[m[32m                );[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            $newBreak = $this->input('requested_new_break', []);[m
+[32m+[m
+[32m+[m[32m            $checkBreak([m
+[32m+[m[32m                $newBreak['requested_break_start'] ?? null,[m
+[32m+[m[32m                $newBreak['requested_break_end'] ?? null,[m
+[32m+[m[32m                'requested_new_break.requested_break_start',[m
+[32m+[m[32m                'requested_new_break.requested_break_end'[m
+[32m+[m[32m            );[m
+[32m+[m[32m        });[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public function messages()[m
+[32m+[m[32m    {[m
+[32m+[m[32m        return [[m
+[32m+[m[32m            'requested_clock_in.required' => '出勤時間を入力してください。',[m
+[32m+[m[32m            'requested_clock_in.date_format' => '出勤時間はHH:MM形式で入力してください。',[m
+[32m+[m
+[32m+[m[32m            'requested_clock_out.required' => '退勤時間を入力してください。',[m
+[32m+[m[32m            'requested_clock_out.date_format' => '退勤時間はHH:MM形式で入力してください。',[m
+[32m+[m
+[32m+[m[32m            'requested_breaks.*.requested_break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください。',[m
+[32m+[m[32m            'requested_breaks.*.requested_break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください。',[m
+[32m+[m
+[32m+[m[32m            'requested_new_break.requested_break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください。',[m
+[32m+[m[32m            'requested_new_break.requested_break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください。',[m
+[32m+[m
+[32m+[m[32m            'requested_comment.required' => '備考を記入してください',[m
+         ];[m
+     }[m
+ }[m

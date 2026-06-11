@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceRecord;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 
 class AttendanceListController extends Controller
@@ -13,8 +14,8 @@ class AttendanceListController extends Controller
         $user = auth()->user();
 
         $targetMonth = $request->input('month')
-            ? Carbon::parse($request->input('month'))
-            : now();
+            ? Carbon::parse($request->input('month'))->startOfMonth()
+            : now()->startOfMonth();
 
         $startOfMonth = $targetMonth->copy()->startOfMonth();
         $endOfMonth = $targetMonth->copy()->endOfMonth();
@@ -26,12 +27,28 @@ class AttendanceListController extends Controller
                 $endOfMonth->toDateString(),
             ])
             ->orderBy('work_date')
-            ->get();
+            ->get()
+            ->keyBy(function ($record) {
+                return $record->work_date->format('Y-m-d');
+            });
+
+        $period = CarbonPeriod::create($startOfMonth, $endOfMonth);
+
+        $attendanceRows = [];
+
+        foreach ($period as $date) {
+            $dateKey = $date->format('Y-m-d');
+
+            $attendanceRows[] = [
+                'date' => $date->copy(),
+                'record' => $attendanceRecords->get($dateKey),
+            ];
+        }
 
         return view('attendance.list', compact(
             'user',
             'targetMonth',
-            'attendanceRecords'
+            'attendanceRows'
         ));
     }
 }

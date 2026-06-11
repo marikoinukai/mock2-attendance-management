@@ -19,7 +19,7 @@ class CreateAttendanceRecordsTable extends Migration
             $table->date('work_date');
             $table->time('clock_in');
             $table->time('clock_out')->nullable();
-            $table->string('comment')->nullable();
+            $table->text('comment')->nullable();
             $table->timestamps();
 
             $table->unique(['user_id', 'work_date']);
