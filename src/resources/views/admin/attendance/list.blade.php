@@ -13,7 +13,7 @@
             </a>
 
             <div class="date-nav__current">
-                <span class="date-nav__calendar">📅</span>
+                <img src="{{ asset('img/calendar-icon.svg') }}" alt="" class="date-icon">
                 <span>{{ $targetDate->format('Y/m/d') }}</span>
             </div>
 

@@ -13,7 +13,7 @@
             </a>
 
             <div class="month-nav__current">
-                <span class="month-nav__calendar">📅</span>
+                <img src="{{ asset('img/calendar-icon.svg') }}" alt="" class="month-icon">
                 <span>{{ $targetMonth->format('Y/m') }}</span>
             </div>
 
