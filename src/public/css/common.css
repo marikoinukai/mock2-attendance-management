@@ -163,7 +163,20 @@ button {
 }
 
 .month-nav__current {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     font-size: 18px;
+    font-weight: bold;
+}
+
+.month-nav__calendar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    line-height: 1;
 }
 
 .date-nav {
@@ -182,7 +195,20 @@ button {
 }
 
 .date-nav__current {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     font-size: 18px;
+    font-weight: bold;
+}
+
+.date-nav__calendar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    line-height: 1;
 }
 
 /* ==============================

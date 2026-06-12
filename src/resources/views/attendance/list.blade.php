@@ -13,7 +13,8 @@
             </a>
 
             <div class="month-nav__current">
-                {{ $targetMonth->format('Y/m') }}
+                <span class="month-nav__calendar">📅</span>
+                <span>{{ $targetMonth->format('Y/m') }}</span>
             </div>
 
             <a class="month-nav__link"

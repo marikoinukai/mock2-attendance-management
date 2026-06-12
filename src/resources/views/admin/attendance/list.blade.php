@@ -7,15 +7,18 @@
         <h1 class="page-title">{{ $targetDate->format('Y年n月j日') }}の勤怠</h1>
 
         <div class="date-nav">
-            <a class="date-nav__link" href="{{ route('admin.attendance.index', ['date' => $targetDate->copy()->subDay()->format('Y-m-d')]) }}">
+            <a class="date-nav__link"
+                href="{{ route('admin.attendance.index', ['date' => $targetDate->copy()->subDay()->format('Y-m-d')]) }}">
                 ← 前日
             </a>
 
             <div class="date-nav__current">
-                {{ $targetDate->format('Y/m/d') }}
+                <span class="date-nav__calendar">📅</span>
+                <span>{{ $targetDate->format('Y/m/d') }}</span>
             </div>
 
-            <a class="date-nav__link" href="{{ route('admin.attendance.index', ['date' => $targetDate->copy()->addDay()->format('Y-m-d')]) }}">
+            <a class="date-nav__link"
+                href="{{ route('admin.attendance.index', ['date' => $targetDate->copy()->addDay()->format('Y-m-d')]) }}">
                 翌日 →
             </a>
         </div>
