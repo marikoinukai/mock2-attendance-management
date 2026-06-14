@@ -6,7 +6,7 @@
     <section class="auth-page">
         <h1 class="auth-page__title">会員登録</h1>
 
-        <form class="auth-form" method="POST" action="{{ url('/register') }}">
+        <form class="auth-form" method="POST" action="{{ route('register') }}">
             @csrf
 
             <div class="auth-form__group">
@@ -45,7 +45,7 @@
         </form>
 
         <div class="auth-page__link-area">
-            <a class="auth-page__link" href="{{ url('/login') }}">ログインはこちら</a>
+            <a class="auth-page__link" href="{{ route('login') }}">ログインはこちら</a>
         </div>
     </section>
 @endsection

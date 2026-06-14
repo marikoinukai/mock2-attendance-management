@@ -14,10 +14,10 @@
         <div class="header__inner">
             @auth
                 @if (auth()->user()->is_admin)
-                    <a class="header__logo" href="{{ url('/admin/attendance/list') }}"> <img class="header__logo-image"
+                    <a class="header__logo" href="{{ route('admin.attendance.index') }}"> <img class="header__logo-image"
                             src="{{ asset('img/logo.png') }}" alt="COACHTECH"></a>
                 @else
-                    <a class="header__logo" href="{{ url('/attendance') }}"><img class="header__logo-image"
+                    <a class="header__logo" href="{{ route('attendance.index') }}"><img class="header__logo-image"
                             src="{{ asset('img/logo.png') }}" alt="COACHTECH"></a>
                 @endif
             @else
@@ -29,24 +29,24 @@
                 @unless (request()->routeIs('verification.notice'))
                     <nav class="header__nav">
                         @if (auth()->user()->is_admin)
-                            <a class="header__link" href="{{ url('/admin/attendance/list') }}">勤怠一覧</a>
-                            <a class="header__link" href="{{ url('/admin/staff/list') }}">スタッフ一覧</a>
-                            <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
+                            <a class="header__link" href="{{ route('admin.attendance.index') }}">勤怠一覧</a>
+                            <a class="header__link" href="{{ route('admin.staff.index') }}">スタッフ一覧</a>
+                            <a class="header__link" href="{{ route('attendance_correction_requests.index') }}">申請一覧</a>
                         @else
                             @if (request()->routeIs('attendance.index') &&
                                     isset($attendanceRecord) &&
                                     $attendanceRecord &&
                                     $attendanceRecord->clock_out)
-                                <a class="header__link" href="{{ url('/attendance/list') }}">今月の出勤一覧</a>
-                                <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請一覧</a>
+                                <a class="header__link" href="{{ route('attendance.list') }}">今月の出勤一覧</a>
+                                <a class="header__link" href="{{ route('attendance_correction_requests.index') }}">申請一覧</a>
                             @else
-                                <a class="header__link" href="{{ url('/attendance') }}">勤怠</a>
-                                <a class="header__link" href="{{ url('/attendance/list') }}">勤怠一覧</a>
-                                <a class="header__link" href="{{ url('/stamp_correction_request/list') }}">申請</a>
+                                <a class="header__link" href="{{ route('attendance.index') }}">勤怠</a>
+                                <a class="header__link" href="{{ route('attendance.list') }}">勤怠一覧</a>
+                                <a class="header__link" href="{{ route('attendance_correction_requests.index') }}">申請</a>
                             @endif
                         @endif
 
-                        <form class="header__logout-form" action="{{ url('/logout') }}" method="POST">
+                        <form class="header__logout-form" action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button class="header__logout-button" type="submit">ログアウト</button>
                         </form>
