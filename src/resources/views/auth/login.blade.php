@@ -11,7 +11,7 @@
 
             <div class="auth-form__group">
                 <label class="auth-form__label" for="email">メールアドレス</label>
-                <input class="auth-form__input" type="email" id="email" name="email" value="{{ old('email') }}">
+                <input class="auth-form__input" type="text" id="email" name="email" value="{{ old('email') }}">
 
                 @error('email')
                     <p class="error-message">{{ $message }}</p>
