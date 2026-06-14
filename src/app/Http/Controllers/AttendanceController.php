@@ -10,7 +10,8 @@ class AttendanceController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $today = now()->toDateString();
+        $currentDateTime = now();
+        $today = $currentDateTime->toDateString();
 
         $attendanceRecord = AttendanceRecord::where('user_id', $user->id)
             ->where('work_date', $today)
@@ -25,13 +26,14 @@ class AttendanceController extends Controller
                 ->first();
         }
 
-        return view('attendance.index', compact('user', 'attendanceRecord', 'currentBreak'));
+        return view('attendance.index', compact('user', 'attendanceRecord', 'currentBreak', 'currentDateTime'));
     }
 
     public function clockIn()
     {
         $user = auth()->user();
-        $today = now()->toDateString();
+        $currentDateTime = now();
+        $today = $currentDateTime->toDateString();
 
         AttendanceRecord::firstOrCreate(
             [
@@ -39,7 +41,7 @@ class AttendanceController extends Controller
                 'work_date' => $today,
             ],
             [
-                'clock_in' => now()->format('H:i:s'),
+                'clock_in' => $currentDateTime->format('H:i:s'),
             ]
         );
 
@@ -49,7 +51,8 @@ class AttendanceController extends Controller
     public function clockOut()
     {
         $user = auth()->user();
-        $today = now()->toDateString();
+        $currentDateTime = now();
+        $today = $currentDateTime->toDateString();
 
         $attendanceRecord = AttendanceRecord::where('user_id', $user->id)
             ->where('work_date', $today)
@@ -58,7 +61,7 @@ class AttendanceController extends Controller
 
         if ($attendanceRecord) {
             $attendanceRecord->update([
-                'clock_out' => now()->format('H:i:s'),
+                'clock_out' => $currentDateTime->format('H:i:s'),
             ]);
         }
 
@@ -68,7 +71,8 @@ class AttendanceController extends Controller
     public function breakStart()
     {
         $user = auth()->user();
-        $today = now()->toDateString();
+        $currentDateTime = now();
+        $today = $currentDateTime->toDateString();
 
         $attendanceRecord = AttendanceRecord::where('user_id', $user->id)
             ->where('work_date', $today)
@@ -78,7 +82,7 @@ class AttendanceController extends Controller
         if ($attendanceRecord) {
             AttendanceBreak::create([
                 'attendance_record_id' => $attendanceRecord->id,
-                'break_start' => now()->format('H:i:s'),
+                'break_start' => $currentDateTime->format('H:i:s'),
             ]);
         }
 
@@ -88,7 +92,8 @@ class AttendanceController extends Controller
     public function breakEnd()
     {
         $user = auth()->user();
-        $today = now()->toDateString();
+        $currentDateTime = now();
+        $today = $currentDateTime->toDateString();
 
         $attendanceRecord = AttendanceRecord::where('user_id', $user->id)
             ->where('work_date', $today)
@@ -103,7 +108,7 @@ class AttendanceController extends Controller
 
             if ($currentBreak) {
                 $currentBreak->update([
-                    'break_end' => now()->format('H:i:s'),
+                    'break_end' => $currentDateTime->format('H:i:s'),
                 ]);
             }
         }

@@ -23,11 +23,11 @@
         </div>
 
         <p class="attendance-stamp__date">
-            {{ now()->format('Y年n月j日') }}({{ $weekdays[now()->dayOfWeek] }})
+            {{ $currentDateTime->format('Y年n月j日') }}({{ $weekdays[$currentDateTime->dayOfWeek] }})
         </p>
 
         <p class="attendance-stamp__time">
-            {{ now()->format('H:i') }}
+            {{ $currentDateTime->format('H:i') }}
         </p>
 
         <div class="attendance-stamp__buttons">
