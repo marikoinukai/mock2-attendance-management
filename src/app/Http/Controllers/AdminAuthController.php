@@ -17,6 +17,10 @@ class AdminAuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+        ], [
+            'email.required' => 'メールアドレスを入力してください',
+            'email.email' => 'メール形式で入力してください',
+            'password.required' => 'パスワードを入力してください',
         ]);
 
         if (Auth::attempt($credentials)) {
@@ -29,12 +33,12 @@ class AdminAuthController extends Controller
             Auth::logout();
 
             return back()->withErrors([
-                'email' => '管理者アカウントでログインしてください。',
+                'email' => '管理者アカウントでログインしてください',
             ]);
         }
 
         return back()->withErrors([
-            'email' => 'ログイン情報が登録されていません。',
+            'email' => 'ログイン情報が登録されていません',
         ]);
     }
 }
