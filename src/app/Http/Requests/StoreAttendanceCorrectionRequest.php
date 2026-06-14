@@ -131,17 +131,17 @@ class StoreAttendanceCorrectionRequest extends FormRequest
     public function messages()
     {
         return [
-            'requested_clock_in.required' => '出勤時間を入力してください。',
-            'requested_clock_in.date_format' => '出勤時間はHH:MM形式で入力してください。',
+            'requested_clock_in.required' => '出勤時間を入力してください',
+            'requested_clock_in.date_format' => '出勤時間はHH:MM形式で入力してください',
 
-            'requested_clock_out.required' => '退勤時間を入力してください。',
-            'requested_clock_out.date_format' => '退勤時間はHH:MM形式で入力してください。',
+            'requested_clock_out.required' => '退勤時間を入力してください',
+            'requested_clock_out.date_format' => '退勤時間はHH:MM形式で入力してください',
 
-            'requested_breaks.*.requested_break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください。',
-            'requested_breaks.*.requested_break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください。',
+            'requested_breaks.*.requested_break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください',
+            'requested_breaks.*.requested_break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください',
 
-            'requested_new_break.requested_break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください。',
-            'requested_new_break.requested_break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください。',
+            'requested_new_break.requested_break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください',
+            'requested_new_break.requested_break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください',
 
             'requested_comment.required' => '備考を記入してください',
         ];

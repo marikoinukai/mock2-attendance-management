@@ -20,8 +20,7 @@
                 <tr>
                     <th>日付</th>
                     <td>
-                        {{ $correctionRequest->attendanceRecord->work_date->format('Y年') }}
-                        {{ $correctionRequest->attendanceRecord->work_date->format('n月j日') }}
+                        {{ $correctionRequest->attendanceRecord->work_date->format('Y年n月j日') }}
                     </td>
                 </tr>
 
@@ -67,7 +66,8 @@
         @endif
 
         <div class="detail-link-area">
-            <a class="back-link" href="{{ route('attendance_correction_requests.index', ['status' => $correctionRequest->status]) }}">
+            <a class="back-link"
+                href="{{ route('attendance_correction_requests.index', ['status' => $correctionRequest->status]) }}">
                 申請一覧へ戻る
             </a>
         </div>

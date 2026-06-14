@@ -47,7 +47,7 @@ class AttendanceCorrectionRequestController extends Controller
         ) {
             return redirect()
                 ->route('attendance.detail', $attendanceRecord->id)
-                ->with('status', '承認待ちのため修正はできません。');
+                ->with('status', '承認待ちのため修正はできません');
         }
 
         $correctionRequest = AttendanceCorrectionRequest::create([
@@ -82,6 +82,6 @@ class AttendanceCorrectionRequestController extends Controller
 
         return redirect()
             ->route('attendance.detail', $attendanceRecord->id)
-            ->with('status', '修正申請を送信しました。');
+            ->with('status', '修正申請を送信しました');
     }
 }

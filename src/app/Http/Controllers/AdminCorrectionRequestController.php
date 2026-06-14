@@ -48,7 +48,7 @@ class AdminCorrectionRequestController extends Controller
         if ($correctionRequest->status === 'approved') {
             return redirect()
                 ->route('stamp_correction_request.approve.show', $correctionRequest->id)
-                ->with('status', 'この申請はすでに承認済みです。');
+                ->with('status', 'この申請はすでに承認済みです');
         }
 
         DB::transaction(function () use ($correctionRequest) {
@@ -78,6 +78,6 @@ class AdminCorrectionRequestController extends Controller
 
         return redirect()
             ->route('stamp_correction_request.approve.show', $correctionRequest->id)
-            ->with('status', '修正申請を承認しました。');
+            ->with('status', '修正申請を承認しました');
     }
 }

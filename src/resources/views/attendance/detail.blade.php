@@ -20,8 +20,7 @@
                     <tr>
                         <th>日付</th>
                         <td>
-                            {{ $attendanceRecord->work_date->format('Y年') }}
-                            {{ $attendanceRecord->work_date->format('n月j日') }}
+                            {{ $attendanceRecord->work_date->format('Y年n月j日') }}
                         </td>
                     </tr>
                     <tr>
@@ -66,8 +65,7 @@
                         <tr>
                             <th>日付</th>
                             <td>
-                                {{ $attendanceRecord->work_date->format('Y年') }}
-                                {{ $attendanceRecord->work_date->format('n月j日') }}
+                                {{ $attendanceRecord->work_date->format('Y年n月j日') }}
                             </td>
                         </tr>
 
@@ -125,7 +123,8 @@
                             <th>休憩{{ $attendanceRecord->breaks->count() + 1 }}</th>
                             <td>
                                 <div class="time-input-group">
-                                    <input class="time-input" type="time" name="requested_new_break[requested_break_start]"
+                                    <input class="time-input" type="time"
+                                        name="requested_new_break[requested_break_start]"
                                         value="{{ old('requested_new_break.requested_break_start') }}">
 
                                     <span class="detail-table__separator">〜</span>
