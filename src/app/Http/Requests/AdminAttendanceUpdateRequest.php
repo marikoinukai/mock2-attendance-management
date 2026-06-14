@@ -131,17 +131,17 @@ class AdminAttendanceUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'clock_in.required' => '出勤時間を入力してください。',
-            'clock_in.date_format' => '出勤時間はHH:MM形式で入力してください。',
+            'clock_in.required' => '出勤時間を入力してください',
+            'clock_in.date_format' => '出勤時間はHH:MM形式で入力してください',
 
-            'clock_out.required' => '退勤時間を入力してください。',
-            'clock_out.date_format' => '退勤時間はHH:MM形式で入力してください。',
+            'clock_out.required' => '退勤時間を入力してください',
+            'clock_out.date_format' => '退勤時間はHH:MM形式で入力してください',
 
-            'breaks.*.break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください。',
-            'breaks.*.break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください。',
+            'breaks.*.break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください',
+            'breaks.*.break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください',
 
-            'new_break.break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください。',
-            'new_break.break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください。',
+            'new_break.break_start.date_format' => '休憩開始時刻はHH:MM形式で入力してください',
+            'new_break.break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください',
 
             'comment.required' => '備考を記入してください',
         ];

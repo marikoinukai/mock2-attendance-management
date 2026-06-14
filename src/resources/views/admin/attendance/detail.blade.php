@@ -21,8 +21,7 @@
                     <tr>
                         <th>日付</th>
                         <td>
-                            {{ $attendance->work_date->format('Y年') }}
-                            {{ $attendance->work_date->format('n月j日') }}
+                            {{ $attendance->work_date->format('Y年n月j日') }}
                         </td>
                     </tr>
 
@@ -56,7 +55,8 @@
             <p class="pending-message">*承認待ちのため修正はできません。</p>
 
             <div class="detail-link-area">
-                <a class="approve-link" href="{{ route('stamp_correction_request.approve.show', $pendingCorrectionRequest->id) }}">
+                <a class="approve-link"
+                    href="{{ route('stamp_correction_request.approve.show', $pendingCorrectionRequest->id) }}">
                     修正申請の承認画面へ
                 </a>
             </div>
@@ -75,8 +75,7 @@
                         <tr>
                             <th>日付</th>
                             <td>
-                                {{ $attendance->work_date->format('Y年') }}
-                                {{ $attendance->work_date->format('n月j日') }}
+                                {{ $attendance->work_date->format('Y年n月j日') }}
                             </td>
                         </tr>
 
@@ -108,12 +107,14 @@
                                 <th>休憩{{ $loop->iteration }}</th>
                                 <td>
                                     <div class="time-input-group">
-                                        <input class="time-input" type="time" name="breaks[{{ $break->id }}][break_start]"
+                                        <input class="time-input" type="time"
+                                            name="breaks[{{ $break->id }}][break_start]"
                                             value="{{ old('breaks.' . $break->id . '.break_start', $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}">
 
                                         <span class="detail-table__separator">〜</span>
 
-                                        <input class="time-input" type="time" name="breaks[{{ $break->id }}][break_end]"
+                                        <input class="time-input" type="time"
+                                            name="breaks[{{ $break->id }}][break_end]"
                                             value="{{ old('breaks.' . $break->id . '.break_end', $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
                                     </div>
 
@@ -171,7 +172,8 @@
         @endif
 
         <div class="detail-link-area">
-            <a class="back-link" href="{{ route('admin.attendance.index', ['date' => $attendance->work_date->format('Y-m-d')]) }}">
+            <a class="back-link"
+                href="{{ route('admin.attendance.index', ['date' => $attendance->work_date->format('Y-m-d')]) }}">
                 勤怠一覧に戻る
             </a>
         </div>
