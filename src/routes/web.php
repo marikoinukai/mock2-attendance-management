@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\AdminCorrectionRequestController;
 use App\Http\Controllers\AdminStaffController;
+use App\Http\Controllers\AttendanceReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,6 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/attendance/break-end', [AttendanceController::class, 'breakEnd'])->name('attendance.break_end');
 
         Route::get('/attendance/list', [AttendanceListController::class, 'index'])->name('attendance.list');
+        Route::get('/attendance/report', [AttendanceReportController::class, 'index'])
+            ->name('attendance.report');
         Route::get('/attendance/detail/{id}', [AttendanceDetailController::class, 'show'])->name('attendance.detail');
         Route::post('/attendance/detail/{id}/correction', [AttendanceCorrectionRequestController::class, 'store'])->name('attendance.correction.store');
     });

@@ -579,3 +579,87 @@ button {
     font-size: 16px;
     cursor: pointer;
 }
+
+/* ==============================
+   Attendance Report
+============================== */
+.report-page {
+    width: 100%;
+    min-height: calc(100vh - 64px);
+    padding: 48px 0;
+    background: #fff;
+}
+
+.report-page__inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.report__title {
+    margin: 0 0 24px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.report__lead {
+    margin: 0 0 32px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.report__section {
+    margin-bottom: 32px;
+}
+
+.report__heading {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.report__summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.report__summary-card {
+    padding: 20px 24px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f7f7f7;
+}
+
+.report__summary-label {
+    margin: 0 0 12px;
+    color: #737373;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.report__summary-value {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.report__table {
+    background: #fff;
+}
+
+.report__table th:first-child,
+.report__table td:first-child {
+    text-align: left;
+}
+
+.report__table td {
+    font-weight: bold;
+}
+
+.report__note {
+    margin: 0 0 16px;
+    color: #737373;
+    font-size: 13px;
+    font-weight: bold;
+}

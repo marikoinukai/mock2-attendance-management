@@ -43,6 +43,7 @@
                                 <a class="header__link" href="{{ route('attendance.index') }}">勤怠</a>
                                 <a class="header__link" href="{{ route('attendance.list') }}">勤怠一覧</a>
                                 <a class="header__link" href="{{ route('attendance_correction_requests.index') }}">申請</a>
+                                <a class="header__link" href="{{ route('attendance.report') }}">レポート</a>
                             @endif
                         @endif
 
@@ -56,9 +57,13 @@
         </div>
     </header>
 
-    <main class="main">
+    @if (request()->routeIs('attendance.report'))
         @yield('content')
-    </main>
+    @else
+        <main class="main">
+            @yield('content')
+        </main>
+    @endif
 </body>
 
 </html>
