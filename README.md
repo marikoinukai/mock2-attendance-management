@@ -349,7 +349,7 @@ docker compose exec php php artisan test
 確認時点の結果は以下です。
 
 ```text
-Tests:  74 passed
+Tests:  77 passed
 ```
 
 ### 作成済みテスト
