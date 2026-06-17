@@ -1,4 +1,4 @@
-# laravel-docker-template
+# 勤怠管理アプリ
 
 ## ダミーデータ
 
@@ -76,6 +76,202 @@ docker compose exec php php artisan migrate:fresh --seed
 docker compose exec php php artisan db:seed --class=DummyAttendanceSeeder
 ```
 
+## 公開API
+
+本アプリケーションでは、勤怠情報を外部アプリケーションから取得・操作するための公開APIを実装しています。
+
+APIのURLは `/api/v1` から始まります。
+
+### 勤怠APIエンドポイント
+
+| メソッド        | URL                                             | 認証 | 内容     |
+| ----------- | ----------------------------------------------- | -- | ------ |
+| GET         | `/api/v1/attendance-records`                    | 不要 | 勤怠一覧取得 |
+| GET         | `/api/v1/attendance-records/{attendanceRecord}` | 不要 | 勤怠詳細取得 |
+| POST        | `/api/v1/attendance-records`                    | 必要 | 勤怠登録   |
+| PUT / PATCH | `/api/v1/attendance-records/{attendanceRecord}` | 必要 | 勤怠更新   |
+| DELETE      | `/api/v1/attendance-records/{attendanceRecord}` | 必要 | 勤怠削除   |
+
+### 勤怠一覧取得
+
+```bash
+curl "http://localhost/api/v1/attendance-records?per_page=20"
+```
+
+使用できるクエリパラメータは以下です。
+
+| パラメータ      | 内容                       |
+| ---------- | ------------------------ |
+| `user_id`  | ユーザーIDで絞り込み              |
+| `date`     | 日付で絞り込み。形式は `YYYY-MM-DD` |
+| `month`    | 月で絞り込み。形式は `YYYY-MM`     |
+| `page`     | ページ番号                    |
+| `per_page` | 1ページあたりの件数。最大100件        |
+
+レスポンス例です。
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "user_name": "ユーザー1",
+      "date": "2026-06-01",
+      "clock_in": "09:00:00",
+      "clock_out": "18:00:00",
+      "total_time": "08:00",
+      "total_break_time": "01:00",
+      "comment": "通常勤務"
+    }
+  ],
+  "links": {},
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "per_page": 20,
+    "total": 1
+  }
+}
+```
+
+### 勤怠詳細取得
+
+```bash
+curl "http://localhost/api/v1/attendance-records/1"
+```
+
+レスポンス例です。
+
+```json
+{
+  "data": {
+    "id": 1,
+    "user_id": 1,
+    "user_name": "ユーザー1",
+    "user": {
+      "id": 1,
+      "name": "ユーザー1"
+    },
+    "date": "2026-06-01",
+    "clock_in": "09:00:00",
+    "clock_out": "18:00:00",
+    "total_time": "08:00",
+    "total_break_time": "01:00",
+    "comment": "通常勤務",
+    "breaks": [
+      {
+        "id": 1,
+        "break_in": "12:00:00",
+        "break_out": "13:00:00"
+      }
+    ],
+    "applications": []
+  }
+}
+```
+
+### API認証
+
+勤怠の登録・更新・削除には、Laravel SanctumによるAPIトークン認証が必要です。
+
+認証が必要なAPIでは、リクエストヘッダーに以下を指定します。
+
+```text
+Authorization: Bearer {APIトークン}
+```
+
+開発環境でAPIトークンを発行する例です。
+
+```bash
+docker compose exec php php artisan tinker
+```
+
+```php
+$user = App\Models\User::find(1);
+$user->createToken('api-test-token')->plainTextToken;
+```
+
+表示されたトークンを使って、以下のようにリクエストします。
+
+```bash
+curl -i -X POST "http://localhost/api/v1/attendance-records" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer {APIトークン}" \
+-d '{"date":"2026-07-01","clock_in":"09:00:00","clock_out":"18:00:00","comment":"API登録テスト"}'
+```
+
+### 勤怠登録リクエスト例
+
+```json
+{
+  "date": "2026-07-01",
+  "clock_in": "09:00:00",
+  "clock_out": "18:00:00",
+  "comment": "API登録テスト"
+}
+```
+
+正常に登録された場合は、`201 Created` が返ります。
+
+### 勤怠更新リクエスト例
+
+```bash
+curl -i -X PUT "http://localhost/api/v1/attendance-records/1" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer {APIトークン}" \
+-d '{"date":"2026-07-01","clock_in":"09:30:00","clock_out":"18:30:00","comment":"API更新テスト"}'
+```
+
+正常に更新された場合は、`200 OK` が返ります。
+
+### 勤怠削除リクエスト例
+
+```bash
+curl -i -X DELETE "http://localhost/api/v1/attendance-records/1" \
+-H "Authorization: Bearer {APIトークン}"
+```
+
+正常に削除された場合は、`204 No Content` が返ります。
+
+### APIエラーレスポンス
+
+存在しない勤怠IDを指定した場合は、`404 Not Found` が返ります。
+
+```json
+{
+  "error": "勤怠情報が見つかりませんでした。"
+}
+```
+
+未認証で登録・更新・削除を行った場合は、`401 Unauthorized` が返ります。
+
+```json
+{
+  "message": "Unauthenticated."
+}
+```
+
+他ユーザーの勤怠を更新・削除しようとした場合は、`403 Forbidden` が返ります。
+
+```json
+{
+  "error": "この操作を実行する権限がありません。"
+}
+```
+
+バリデーションエラーの場合は、`422 Unprocessable Content` が返ります。
+
+```json
+{
+  "message": "勤怠日は必須です。",
+  "errors": {
+    "date": [
+      "勤怠日は必須です。"
+    ]
+  }
+}
+```
 
 ## PHPUnitテスト
 
@@ -142,6 +338,20 @@ docker compose exec php php artisan test --filter=LoginTest
 docker compose exec php php artisan test --filter=AttendanceStampTest
 ```
 
+### テスト実行結果
+
+以下のコマンドで全テストが通過することを確認しています。
+
+```bash
+docker compose exec php php artisan test
+```
+
+確認時点の結果は以下です。
+
+```text
+Tests:  74 passed
+```
+
 ### 作成済みテスト
 
 本アプリケーションでは、以下のFeatureテストを作成しています。
@@ -158,6 +368,15 @@ docker compose exec php php artisan test --filter=AttendanceStampTest
 * 管理者勤怠詳細・修正テスト
 * スタッフ一覧テスト
 * スタッフ別勤怠一覧・CSV出力テスト
+* 公開APIテスト
+
+  * 勤怠一覧取得API
+  * 勤怠詳細取得API
+  * 存在しない勤怠IDの404 JSON
+  * 未認証時の401 JSON
+  * 認証済みユーザーによる勤怠登録・更新・削除
+  * 他ユーザー操作時の403 JSON
+
 
 テストは主に `src/tests/Feature` 配下に配置しています。
 
