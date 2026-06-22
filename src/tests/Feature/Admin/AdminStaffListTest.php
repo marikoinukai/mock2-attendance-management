@@ -33,22 +33,22 @@ class AdminStaffListTest extends TestCase
     {
         $admin = $this->createAdmin();
 
-        $this->createStaff('山田太郎', 'yamada@example.com');
-        $this->createStaff('佐藤花子', 'sato@example.com');
+        $this->createStaff('ユーザー1', 'yamada@example.com');
+        $this->createStaff('ユーザー2', 'sato@example.com');
 
         $response = $this->actingAs($admin)->get('/admin/staff/list');
 
         $response->assertStatus(200);
-        $response->assertSee('山田太郎');
+        $response->assertSee('ユーザー1');
         $response->assertSee('yamada@example.com');
-        $response->assertSee('佐藤花子');
+        $response->assertSee('ユーザー2');
         $response->assertSee('sato@example.com');
         $response->assertSee('詳細');
     }
 
     public function test_staff_list_does_not_display_admin_users()
     {
-        $admin = $this->createAdmin('管理者ユーザー');
+        $admin = $this->createAdmin('ユーザー3');
 
         $this->createStaff('一般ユーザー', 'staff@example.com');
 
@@ -57,7 +57,7 @@ class AdminStaffListTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('一般ユーザー');
         $response->assertSee('staff@example.com');
-        $response->assertDontSee('管理者ユーザー');
+        $response->assertDontSee('ユーザー3');
     }
 
     public function test_general_user_cannot_view_staff_list()

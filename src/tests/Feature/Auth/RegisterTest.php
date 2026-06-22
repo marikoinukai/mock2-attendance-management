@@ -15,9 +15,9 @@ class RegisterTest extends TestCase
     {
         $response = $this->from('/register')->post('/register', [
             'name' => '',
-            'email' => 'test@example.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
+            'email' => 'user1@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
         ]);
 
         $response->assertRedirect('/register');
@@ -29,10 +29,10 @@ class RegisterTest extends TestCase
     public function test_email_is_required()
     {
         $response = $this->from('/register')->post('/register', [
-            'name' => 'テストユーザー',
+            'name' => 'ユーザー1',
             'email' => '',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
+            'password' => 'password',
+            'password_confirmation' => 'password',
         ]);
 
         $response->assertRedirect('/register');
@@ -44,10 +44,10 @@ class RegisterTest extends TestCase
     public function test_email_must_be_valid_email_format()
     {
         $response = $this->from('/register')->post('/register', [
-            'name' => 'テストユーザー',
+            'name' => 'ユーザー1',
             'email' => 'test',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
+            'password' => 'password',
+            'password_confirmation' => 'password',
         ]);
 
         $response->assertRedirect('/register');
@@ -59,8 +59,8 @@ class RegisterTest extends TestCase
     public function test_password_is_required()
     {
         $response = $this->from('/register')->post('/register', [
-            'name' => 'テストユーザー',
-            'email' => 'test@example.com',
+            'name' => 'ユーザー1',
+            'email' => 'user1@example.com',
             'password' => '',
             'password_confirmation' => '',
         ]);
@@ -74,8 +74,8 @@ class RegisterTest extends TestCase
     public function test_password_must_be_at_least_8_characters()
     {
         $response = $this->from('/register')->post('/register', [
-            'name' => 'テストユーザー',
-            'email' => 'test@example.com',
+            'name' => 'ユーザー1',
+            'email' => 'user1@example.com',
             'password' => 'pass123',
             'password_confirmation' => 'pass123',
         ]);
@@ -89,9 +89,9 @@ class RegisterTest extends TestCase
     public function test_password_must_be_confirmed()
     {
         $response = $this->from('/register')->post('/register', [
-            'name' => 'テストユーザー',
-            'email' => 'test@example.com',
-            'password' => 'password123',
+            'name' => 'ユーザー1',
+            'email' => 'user1@example.com',
+            'password' => 'password',
             'password_confirmation' => 'different123',
         ]);
 
@@ -104,21 +104,21 @@ class RegisterTest extends TestCase
     public function test_user_can_register()
     {
         $response = $this->post('/register', [
-            'name' => 'テストユーザー',
-            'email' => 'test@example.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
+            'name' => 'ユーザー1',
+            'email' => 'user1@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
         ]);
 
         $response->assertRedirect('/attendance');
 
         $this->assertDatabaseHas('users', [
-            'name' => 'テストユーザー',
-            'email' => 'test@example.com',
+            'name' => 'ユーザー1',
+            'email' => 'user1@example.com',
         ]);
 
-        $user = User::where('email', 'test@example.com')->first();
+        $user = User::where('email', 'user1@example.com')->first();
 
-        $this->assertTrue(Hash::check('password123', $user->password));
+        $this->assertTrue(Hash::check('password', $user->password));
     }
 }

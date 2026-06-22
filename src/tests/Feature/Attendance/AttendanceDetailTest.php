@@ -23,7 +23,7 @@ class AttendanceDetailTest extends TestCase
 
     public function test_user_can_view_own_attendance_detail()
     {
-        $user = $this->createUser('山田太郎');
+        $user = $this->createUser('ユーザー1');
 
         $attendanceRecord = AttendanceRecord::create([
             'user_id' => $user->id,
@@ -41,7 +41,7 @@ class AttendanceDetailTest extends TestCase
         $response = $this->actingAs($user)->get('/attendance/detail/' . $attendanceRecord->id);
 
         $response->assertStatus(200);
-        $response->assertSee('山田太郎');
+        $response->assertSee('ユーザー1');
         $response->assertSee('2026年6月15日');
         $response->assertSee('09:00');
         $response->assertSee('18:00');
@@ -51,8 +51,8 @@ class AttendanceDetailTest extends TestCase
 
     public function test_user_cannot_view_other_users_attendance_detail()
     {
-        $user = $this->createUser('山田太郎');
-        $otherUser = $this->createUser('佐藤花子');
+        $user = $this->createUser('ユーザー1');
+        $otherUser = $this->createUser('ユーザー2');
 
         $otherAttendanceRecord = AttendanceRecord::create([
             'user_id' => $otherUser->id,
@@ -68,7 +68,7 @@ class AttendanceDetailTest extends TestCase
 
     public function test_attendance_detail_has_correction_form_items()
     {
-        $user = $this->createUser('山田太郎');
+        $user = $this->createUser('ユーザー1');
 
         $attendanceRecord = AttendanceRecord::create([
             'user_id' => $user->id,

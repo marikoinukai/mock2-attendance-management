@@ -33,7 +33,7 @@ class AdminAttendanceListTest extends TestCase
     public function test_admin_can_view_staff_attendance_list_for_selected_date()
     {
         $admin = $this->createAdmin();
-        $staff = $this->createStaff('山田太郎');
+        $staff = $this->createStaff('ユーザー1');
 
         $attendanceRecord = AttendanceRecord::create([
             'user_id' => $staff->id,
@@ -51,7 +51,7 @@ class AdminAttendanceListTest extends TestCase
         $response = $this->actingAs($admin)->get('/admin/attendance/list?date=2026-06-15');
 
         $response->assertStatus(200);
-        $response->assertSee('山田太郎');
+        $response->assertSee('ユーザー1');
         $response->assertSee('09:00');
         $response->assertSee('18:00');
         $response->assertSee('詳細');

@@ -208,8 +208,8 @@ class AttendanceCorrectionRequestTest extends TestCase
 
     public function test_user_cannot_submit_correction_request_for_other_users_attendance()
     {
-        $user = $this->createUser('山田太郎');
-        $otherUser = $this->createUser('佐藤花子');
+        $user = $this->createUser('ユーザー1');
+        $otherUser = $this->createUser('ユーザー2');
         $otherAttendanceRecord = $this->createAttendanceRecord($otherUser);
 
         $response = $this->actingAs($user)

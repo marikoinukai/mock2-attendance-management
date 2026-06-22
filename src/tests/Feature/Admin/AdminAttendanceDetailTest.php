@@ -22,7 +22,7 @@ class AdminAttendanceDetailTest extends TestCase
         ]);
     }
 
-    private function createStaff($name = '山田太郎')
+    private function createStaff($name = 'ユーザー1')
     {
         return User::factory()->create([
             'name' => $name,
@@ -53,13 +53,13 @@ class AdminAttendanceDetailTest extends TestCase
     public function test_admin_can_view_attendance_detail()
     {
         $admin = $this->createAdmin();
-        $staff = $this->createStaff('山田太郎');
+        $staff = $this->createStaff('ユーザー1');
         $attendanceRecord = $this->createAttendanceRecord($staff);
 
         $response = $this->actingAs($admin)->get('/admin/attendance/' . $attendanceRecord->id);
 
         $response->assertStatus(200);
-        $response->assertSee('山田太郎');
+        $response->assertSee('ユーザー1');
         $response->assertSee('2026年6月15日');
         $response->assertSee('09:00');
         $response->assertSee('18:00');

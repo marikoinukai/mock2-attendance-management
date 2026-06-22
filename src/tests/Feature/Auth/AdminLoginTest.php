@@ -15,7 +15,7 @@ class AdminLoginTest extends TestCase
     {
         $response = $this->from('/admin/login')->post('/admin/login', [
             'email' => '',
-            'password' => 'password123',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect('/admin/login');
@@ -27,7 +27,7 @@ class AdminLoginTest extends TestCase
     public function test_password_is_required()
     {
         $response = $this->from('/admin/login')->post('/admin/login', [
-            'email' => 'admin@example.com',
+            'email' => 'user3@example.com',
             'password' => '',
         ]);
 
@@ -41,7 +41,7 @@ class AdminLoginTest extends TestCase
     {
         $response = $this->from('/admin/login')->post('/admin/login', [
             'email' => 'not-register@example.com',
-            'password' => 'password123',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect('/admin/login');
@@ -55,15 +55,16 @@ class AdminLoginTest extends TestCase
     public function test_general_user_cannot_login_as_admin()
     {
         User::factory()->create([
-            'email' => 'user@example.com',
-            'password' => Hash::make('password123'),
+            'name' => 'ユーザー1',
+            'email' => 'user1@example.com',
+            'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'is_admin' => false,
         ]);
 
         $response = $this->from('/admin/login')->post('/admin/login', [
-            'email' => 'user@example.com',
-            'password' => 'password123',
+            'email' => 'user1@example.com',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect('/admin/login');
@@ -77,15 +78,16 @@ class AdminLoginTest extends TestCase
     public function test_admin_can_login()
     {
         $admin = User::factory()->create([
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password123'),
+            'name' => 'ユーザー3',
+            'email' => 'user3@example.com',
+            'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'is_admin' => true,
         ]);
 
         $response = $this->post('/admin/login', [
-            'email' => 'admin@example.com',
-            'password' => 'password123',
+            'email' => 'user3@example.com',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect(route('admin.attendance.index'));

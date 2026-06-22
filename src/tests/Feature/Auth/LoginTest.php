@@ -15,7 +15,7 @@ class LoginTest extends TestCase
     {
         $response = $this->from('/login')->post('/login', [
             'email' => '',
-            'password' => 'password123',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect('/login');
@@ -27,7 +27,7 @@ class LoginTest extends TestCase
     public function test_password_is_required()
     {
         $response = $this->from('/login')->post('/login', [
-            'email' => 'test@example.com',
+            'email' => 'user1@example.com',
             'password' => '',
         ]);
 
@@ -41,7 +41,7 @@ class LoginTest extends TestCase
     {
         $response = $this->from('/login')->post('/login', [
             'email' => 'not-register@example.com',
-            'password' => 'password123',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect('/login');
@@ -55,15 +55,16 @@ class LoginTest extends TestCase
     public function test_user_can_login()
     {
         $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => Hash::make('password123'),
+            'name' => 'ユーザー1',
+            'email' => 'user1@example.com',
+            'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'is_admin' => false,
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
-            'password' => 'password123',
+            'email' => 'user1@example.com',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect('/attendance');

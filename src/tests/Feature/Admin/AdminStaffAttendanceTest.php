@@ -29,7 +29,7 @@ class AdminStaffAttendanceTest extends TestCase
         ]);
     }
 
-    private function createStaff($name = '山田太郎')
+    private function createStaff($name = 'ユーザー1')
     {
         return User::factory()->create([
             'name' => $name,
@@ -43,7 +43,7 @@ class AdminStaffAttendanceTest extends TestCase
         Carbon::setTestNow(Carbon::create(2026, 6, 15, 10, 0, 0));
 
         $admin = $this->createAdmin();
-        $staff = $this->createStaff('山田太郎');
+        $staff = $this->createStaff('ユーザー1');
 
         $attendanceRecord = AttendanceRecord::create([
             'user_id' => $staff->id,
@@ -61,7 +61,7 @@ class AdminStaffAttendanceTest extends TestCase
         $response = $this->actingAs($admin)->get('/admin/attendance/staff/' . $staff->id . '?month=2026-06');
 
         $response->assertStatus(200);
-        $response->assertSee('山田太郎');
+        $response->assertSee('ユーザー1');
         $response->assertSee('09:00');
         $response->assertSee('18:00');
         $response->assertSee('詳細');
@@ -73,8 +73,8 @@ class AdminStaffAttendanceTest extends TestCase
         Carbon::setTestNow(Carbon::create(2026, 6, 15, 10, 0, 0));
 
         $admin = $this->createAdmin();
-        $staff = $this->createStaff('山田太郎');
-        $otherStaff = $this->createStaff('佐藤花子');
+        $staff = $this->createStaff('ユーザー1');
+        $otherStaff = $this->createStaff('ユーザー2');
 
         AttendanceRecord::create([
             'user_id' => $staff->id,
@@ -104,7 +104,7 @@ class AdminStaffAttendanceTest extends TestCase
         Carbon::setTestNow(Carbon::create(2026, 6, 15, 10, 0, 0));
 
         $admin = $this->createAdmin();
-        $staff = $this->createStaff('山田太郎');
+        $staff = $this->createStaff('ユーザー1');
 
         AttendanceRecord::create([
             'user_id' => $staff->id,
@@ -125,7 +125,7 @@ class AdminStaffAttendanceTest extends TestCase
         Carbon::setTestNow(Carbon::create(2026, 6, 15, 10, 0, 0));
 
         $admin = $this->createAdmin();
-        $staff = $this->createStaff('山田太郎');
+        $staff = $this->createStaff('ユーザー1');
 
         AttendanceRecord::create([
             'user_id' => $staff->id,
@@ -146,7 +146,7 @@ class AdminStaffAttendanceTest extends TestCase
         Carbon::setTestNow(Carbon::create(2026, 6, 15, 10, 0, 0));
 
         $admin = $this->createAdmin();
-        $staff = $this->createStaff('山田太郎');
+        $staff = $this->createStaff('ユーザー1');
 
         AttendanceRecord::create([
             'user_id' => $staff->id,
@@ -163,7 +163,7 @@ class AdminStaffAttendanceTest extends TestCase
     public function test_general_user_cannot_view_staff_attendance_page()
     {
         $user = $this->createStaff('一般ユーザー');
-        $staff = $this->createStaff('山田太郎');
+        $staff = $this->createStaff('ユーザー1');
 
         $response = $this->actingAs($user)->get('/admin/attendance/staff/' . $staff->id);
 
