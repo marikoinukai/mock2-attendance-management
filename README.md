@@ -1,16 +1,137 @@
 # 勤怠管理アプリ
 
+勤怠管理アプリは、一般ユーザーの出勤・休憩・退勤の打刻、勤怠一覧確認、勤怠修正申請、管理者による勤怠確認・修正・申請承認ができるアプリケーションです。
+
+一般ユーザーは会員登録後、メール認証を完了することで勤怠機能を利用できます。
+管理者は専用ログイン画面からログインし、全スタッフの勤怠確認、スタッフ別月次勤怠確認、CSV出力、修正申請の承認を行うことができます。
+
+また、応用機能として、勤怠レポート画面、公開API、Laravel SanctumによるAPIトークン認証、Policyによる認可制御を実装しています。
+
+## 環境構築
+
+### Dockerビルド
+
+1. リポジトリをクローンします。
+
+```bash
+git clone git@github.com:marikoinukai/mock2-attendance-management.git
+```
+
+2. プロジェクトディレクトリへ移動します。
+
+```bash
+cd mock2-attendance-management
+```
+
+3. Docker Desktopを起動します。
+
+4. Dockerコンテナを起動します。
+
+```bash
+docker compose up -d --build
+```
+
+### Laravel環境構築
+
+1. PHPコンテナ内でComposerを実行します。
+
+```bash
+docker compose exec php composer install
+```
+
+2. `.env.example` をコピーして `.env` を作成します。
+
+```bash
+cp src/.env.example src/.env
+```
+
+3. `.env` に以下の環境変数を設定します。
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=laravel_pass
+
+MAIL_MAILER=smtp
+MAIL_HOST=mailhog
+MAIL_PORT=1025
+MAIL_FROM_ADDRESS=example@example.com
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+4. アプリケーションキーを作成します。
+
+```bash
+docker compose exec php php artisan key:generate
+```
+
+5. マイグレーションを実行します。
+
+```bash
+docker compose exec php php artisan migrate
+```
+
+6. シーディングを実行します。
+
+```bash
+docker compose exec php php artisan db:seed
+```
+
+7. キャッシュをクリアします。
+
+```bash
+docker compose exec php php artisan config:clear
+docker compose exec php php artisan cache:clear
+docker compose exec php php artisan view:clear
+```
+
+## トラブルシューティング
+
+### 権限エラーが発生する場合
+
+環境によっては、`storage` や `bootstrap/cache` の書き込み権限が不足し、permission denied エラーが発生することがあります。
+
+その場合は、以下を実行してください。
+
+```bash
+docker compose exec php chmod -R 777 storage bootstrap/cache
+docker compose exec php php artisan config:clear
+docker compose exec php php artisan cache:clear
+docker compose exec php php artisan view:clear
+```
+
+### データベースを作り直したい場合
+
+以下のコマンドで、テーブルをすべて作り直し、Seederでダミーデータを再作成できます。
+
+```bash
+docker compose exec php php artisan migrate:fresh --seed
+```
+
+`migrate:fresh` は既存のテーブルを削除して再作成するため、登録済みデータはすべて削除されます。
+
+## 認証機能について
+
+- 会員登録、ログイン、ログアウト、メール認証は Laravel Fortify を用いて実装しています。
+- 一般ユーザーは `/login` からログインします。
+- 管理者ユーザーは `/admin/login` からログインします。
+- メール未認証の一般ユーザーは、勤怠画面にアクセスできず、メール認証誘導画面へリダイレクトされます。
+- APIの書き込み系処理では Laravel Sanctum によるAPIトークン認証を使用しています。
+
 ## ダミーデータ
 
 本アプリケーションでは、開発・動作確認用のダミーデータをSeederで作成しています。
 
 ### 作成されるユーザー
 
-| 種別      | 名前    | メールアドレス                                       | パスワード    | メール認証 | 管理者権限 |
-| ------- | ----- | --------------------------------------------- | -------- | ----- | ----- |
-| 一般ユーザー  | ユーザー1 | [user1@example.com](mailto:user1@example.com) | password | 認証済み  | なし    |
-| 一般ユーザー  | ユーザー2 | [user2@example.com](mailto:user2@example.com) | password | 認証済み  | なし    |
-| 管理者ユーザー | ユーザー3 | [user3@example.com](mailto:user3@example.com) | password | 認証済み  | あり    |
+| 種別           | 名前      | メールアドレス                                | パスワード | メール認証 | 管理者権限 |
+| -------------- | --------- | --------------------------------------------- | ---------- | ---------- | ---------- |
+| 一般ユーザー   | ユーザー1 | [user1@example.com](mailto:user1@example.com) | password   | 認証済み   | なし       |
+| 一般ユーザー   | ユーザー2 | [user2@example.com](mailto:user2@example.com) | password   | 認証済み   | なし       |
+| 管理者ユーザー | ユーザー3 | [user3@example.com](mailto:user3@example.com) | password   | 認証済み   | あり       |
 
 管理者ユーザーは、`users` テーブルの `is_admin` カラムを `true` に設定しています。
 
@@ -22,40 +143,40 @@
 
 ユーザー1には、勤怠集計画面の確認用として、以下の意図的なデータを作成しています。
 
-* 過去5ヶ月分：各月の平日15日分、合計75日分
-* 当月分：17日分
-* 合計：92日分
-* 全勤怠に固定休憩 `12:00〜13:00` を付与
+- 過去5ヶ月分：各月の平日15日分、合計75日分
+- 当月分：17日分
+- 合計：92日分
+- 全勤怠に固定休憩 `12:00〜13:00` を付与
 
 当月分の内訳は以下の通りです。
 
-| 勤務パターン |  件数 | 勤務時間        |
-| ------ | --: | ----------- |
-| 通常勤務   | 10日 | 09:00〜18:00 |
-| 残業     |  3日 | 09:00〜20:00 |
-| 遅刻     |  2日 | 09:30〜18:00 |
-| 早退     |  1日 | 09:00〜17:00 |
-| 長時間労働  |  1日 | 08:00〜21:00 |
+| 勤務パターン | 件数 | 勤務時間     |
+| ------------ | ---: | ------------ |
+| 通常勤務     | 10日 | 09:00〜18:00 |
+| 残業         |  3日 | 09:00〜20:00 |
+| 遅刻         |  2日 | 09:30〜18:00 |
+| 早退         |  1日 | 09:00〜17:00 |
+| 長時間労働   |  1日 | 08:00〜21:00 |
 
 #### ユーザー2・ユーザー3の勤怠データ
 
 ユーザー2とユーザー3には、画面表示確認用として、それぞれ30日分の勤怠データを作成しています。
 
-* ユーザー2：30日分
-* ユーザー3：30日分
+- ユーザー2：30日分
+- ユーザー3：30日分
 
 ### 勤怠集計画面の確認用データ
 
 ユーザー1でログインし、`/attendance/report` を開いた場合、以下の値になる想定です。
 
-| 項目               |   予測値 |
-| ---------------- | ----: |
-| 過去6ヶ月の総労働時間      | 744時間 |
-| 過去6ヶ月の総残業時間      |  10時間 |
+| 項目                         |   予測値 |
+| ---------------------------- | -------: |
+| 過去6ヶ月の総労働時間        |  744時間 |
+| 過去6ヶ月の総残業時間        |   10時間 |
 | 過去6ヶ月の平均労働時間 / 日 | 8時間5分 |
-| 当月の遅刻回数          |    2回 |
-| 当月の早退回数          |    1回 |
-| 当月の長時間労働回数       |    1日 |
+| 当月の遅刻回数               |      2回 |
+| 当月の早退回数               |      1回 |
+| 当月の長時間労働回数         |      1日 |
 
 ※ 残業時間は、1日の労働時間が8時間を超えた分で計算しています。
 ※ 長時間労働は、1日の労働時間が10時間を超えた日として判定しています。
@@ -69,12 +190,85 @@ docker compose exec php php artisan config:clear
 docker compose exec php php artisan migrate:fresh --seed
 ```
 
-`migrate:fresh` は既存のテーブルを削除して再作成するため、登録済みデータはすべて削除されます。
-既存データを残したままSeederのみ実行したい場合は、以下を実行します。
+既存データを残したまま勤怠ダミーデータのみ作成したい場合は、以下を実行します。
 
 ```bash
 docker compose exec php php artisan db:seed --class=DummyAttendanceSeeder
 ```
+
+## 使用技術
+
+- PHP 8.1.34
+- Laravel 8.83.8
+- MySQL 8.0.26
+- nginx 1.21.1
+- Docker / Docker Compose
+- Laravel Fortify
+- Laravel Sanctum
+- MailHog
+- PHPUnit
+
+## 主な機能
+
+### 一般ユーザー機能
+
+- 会員登録
+- ログイン / ログアウト
+- メール認証
+- 出勤打刻
+- 休憩開始 / 休憩終了
+- 退勤打刻
+- 勤怠一覧表示
+- 勤怠詳細表示
+- 勤怠修正申請
+- 修正申請一覧表示
+- 勤怠レポート表示
+
+### 管理者機能
+
+- 管理者ログイン / ログアウト
+- 日次勤怠一覧表示
+- 勤怠詳細表示
+- 勤怠直接修正
+- スタッフ一覧表示
+- スタッフ別月次勤怠一覧表示
+- スタッフ別勤怠CSV出力
+- 修正申請一覧表示
+- 修正申請承認
+
+### API機能
+
+- 勤怠一覧取得API
+- 勤怠詳細取得API
+- 勤怠登録API
+- 勤怠更新API
+- 勤怠削除API
+- SanctumによるAPIトークン認証
+- Policyによる本人または管理者のみの更新・削除制御
+
+## 主なテーブル
+
+- users
+- attendance_records
+- attendance_breaks
+- attendance_correction_requests
+- attendance_correction_breaks
+- personal_access_tokens
+
+## URL
+
+| 内容                 | URL                                            |
+| -------------------- | ---------------------------------------------- |
+| 開発環境             | http://localhost/                              |
+| 会員登録             | http://localhost/register                      |
+| 一般ユーザーログイン | http://localhost/login                         |
+| 管理者ログイン       | http://localhost/admin/login                   |
+| 勤怠打刻画面         | http://localhost/attendance                    |
+| 勤怠一覧画面         | http://localhost/attendance/list               |
+| 勤怠レポート画面     | http://localhost/attendance/report             |
+| 修正申請一覧画面     | http://localhost/stamp_correction_request/list |
+| MailHog              | http://localhost:8025/                         |
+| phpMyAdmin           | http://localhost:8080/                         |
 
 ## 公開API
 
@@ -84,13 +278,13 @@ APIのURLは `/api/v1` から始まります。
 
 ### 勤怠APIエンドポイント
 
-| メソッド        | URL                                             | 認証 | 内容     |
-| ----------- | ----------------------------------------------- | -- | ------ |
+| メソッド    | URL                                             | 認証 | 内容         |
+| ----------- | ----------------------------------------------- | ---- | ------------ |
 | GET         | `/api/v1/attendance-records`                    | 不要 | 勤怠一覧取得 |
 | GET         | `/api/v1/attendance-records/{attendanceRecord}` | 不要 | 勤怠詳細取得 |
-| POST        | `/api/v1/attendance-records`                    | 必要 | 勤怠登録   |
-| PUT / PATCH | `/api/v1/attendance-records/{attendanceRecord}` | 必要 | 勤怠更新   |
-| DELETE      | `/api/v1/attendance-records/{attendanceRecord}` | 必要 | 勤怠削除   |
+| POST        | `/api/v1/attendance-records`                    | 必要 | 勤怠登録     |
+| PUT / PATCH | `/api/v1/attendance-records/{attendanceRecord}` | 必要 | 勤怠更新     |
+| DELETE      | `/api/v1/attendance-records/{attendanceRecord}` | 必要 | 勤怠削除     |
 
 ### 勤怠一覧取得
 
@@ -100,13 +294,13 @@ curl "http://localhost/api/v1/attendance-records?per_page=20"
 
 使用できるクエリパラメータは以下です。
 
-| パラメータ      | 内容                       |
-| ---------- | ------------------------ |
-| `user_id`  | ユーザーIDで絞り込み              |
+| パラメータ | 内容                                |
+| ---------- | ----------------------------------- |
+| `user_id`  | ユーザーIDで絞り込み                |
 | `date`     | 日付で絞り込み。形式は `YYYY-MM-DD` |
-| `month`    | 月で絞り込み。形式は `YYYY-MM`     |
-| `page`     | ページ番号                    |
-| `per_page` | 1ページあたりの件数。最大100件        |
+| `month`    | 月で絞り込み。形式は `YYYY-MM`      |
+| `page`     | ページ番号                          |
+| `per_page` | 1ページあたりの件数。最大100件      |
 
 レスポンス例です。
 
@@ -266,9 +460,7 @@ curl -i -X DELETE "http://localhost/api/v1/attendance-records/1" \
 {
   "message": "勤怠日は必須です。",
   "errors": {
-    "date": [
-      "勤怠日は必須です。"
-    ]
+    "date": ["勤怠日は必須です。"]
   }
 }
 ```
@@ -330,13 +522,21 @@ docker compose exec php php artisan migrate --env=testing
 docker compose exec php php artisan test
 ```
 
-特定のテストクラスのみ実行する場合は、`--filter` を使用します。
+特定のテストファイルのみ実行する場合は、対象ファイルのパスを指定します。
 
 ```bash
-docker compose exec php php artisan test --filter=RegisterTest
-docker compose exec php php artisan test --filter=LoginTest
-docker compose exec php php artisan test --filter=AttendanceStampTest
+docker compose exec php php artisan test tests/Feature/Auth/RegisterTest.php
+docker compose exec php php artisan test tests/Feature/Auth/LoginTest.php
+docker compose exec php php artisan test tests/Feature/Attendance/AttendanceStampTest.php
 ```
+
+特定のテストメソッドのみ実行する場合は、`--filter` を使用します。
+
+```bash
+docker compose exec php php artisan test --filter=test_user_can_register
+```
+
+※ `tests/...` のパスはPHPコンテナ内でのパスです。`php artisan test` 実行時は `src/` を付けません。
 
 ### テスト実行結果
 
@@ -356,31 +556,31 @@ Tests:  77 passed
 
 本アプリケーションでは、以下のFeatureテストを作成しています。
 
-* 会員登録テスト
-* メール認証テスト
-  * 会員登録後の認証メール送信
-  * 未認証ユーザーのメール認証画面リダイレクト
-  * 認証URLアクセス後のメール認証完了
-* 一般ユーザーログインテスト
-* 管理者ログインテスト
-* 勤怠画面の日時表示・ステータス表示テスト
-* 出勤・休憩・退勤テスト
-* 一般ユーザー勤怠一覧テスト
-* 一般ユーザー勤怠詳細テスト
-* 勤怠修正申請テスト
-* 管理者勤怠一覧テスト
-* 管理者勤怠詳細・修正テスト
-* スタッフ一覧テスト
-* スタッフ別勤怠一覧・CSV出力テスト
-* 公開APIテスト
+- 会員登録テスト
+- メール認証テスト
+  - 会員登録後の認証メール送信
+  - 未認証ユーザーのメール認証画面リダイレクト
+  - 認証URLアクセス後のメール認証完了
 
-  * 勤怠一覧取得API
-  * 勤怠詳細取得API
-  * 存在しない勤怠IDの404 JSON
-  * 未認証時の401 JSON
-  * 認証済みユーザーによる勤怠登録・更新・削除
-  * 他ユーザー操作時の403 JSON
-
+- 一般ユーザーログインテスト
+- 管理者ログインテスト
+- 勤怠画面の日時表示・ステータス表示テスト
+- 出勤・休憩・退勤テスト
+- 一般ユーザー勤怠一覧テスト
+- 一般ユーザー勤怠詳細テスト
+- 勤怠修正申請テスト
+- 管理者勤怠一覧テスト
+- 管理者勤怠詳細・修正テスト
+- スタッフ一覧テスト
+- スタッフ別勤怠一覧・CSV出力テスト
+- 勤怠レポートテスト
+- 公開APIテスト
+  - 勤怠一覧取得API
+  - 勤怠詳細取得API
+  - 存在しない勤怠IDの404 JSON
+  - 未認証時の401 JSON
+  - 認証済みユーザーによる勤怠登録・更新・削除
+  - 他ユーザー操作時の403 JSON
 
 テストは主に `src/tests/Feature` 配下に配置しています。
 
@@ -388,3 +588,9 @@ Tests:  77 passed
 
 テストでは `RefreshDatabase` を使用しているため、各テストはテスト用データベースをリフレッシュしながら実行されます。
 そのため、通常の開発用データベース `laravel_db` のデータには影響しません。
+
+## ER図
+
+![ER Diagram](er_diagram.png)
+
+※ `er.drawio` は編集用の元データです。
