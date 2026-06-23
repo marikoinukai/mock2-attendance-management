@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceListController;
 use App\Http\Controllers\AttendanceDetailController;
@@ -22,6 +24,29 @@ Route::get('/', function () {
 */
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login.show');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login');
+
+/*
+|--------------------------------------------------------------------------
+| ログアウト
+|--------------------------------------------------------------------------
+*/
+Route::post('/user/logout', function (Request $request) {
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('login');
+})->middleware('auth')->name('user.logout');
+
+Route::post('/admin/logout', function (Request $request) {
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('admin.login.show');
+})->middleware('auth')->name('admin.logout');
 
 /*
 |--------------------------------------------------------------------------

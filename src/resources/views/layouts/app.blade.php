@@ -47,7 +47,9 @@
                             @endif
                         @endif
 
-                        <form class="header__logout-form" action="{{ route('logout') }}" method="POST">
+                        <form class="header__logout-form"
+                            action="{{ Auth::user()->is_admin ? route('admin.logout') : route('user.logout') }}"
+                            method="POST">
                             @csrf
                             <button class="header__logout-button" type="submit">ログアウト</button>
                         </form>
