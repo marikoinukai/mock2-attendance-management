@@ -12,18 +12,9 @@
 <body>
     <header class="header">
         <div class="header__inner">
-            @auth
-                @if (auth()->user()->is_admin)
-                    <a class="header__logo" href="{{ route('admin.attendance.index') }}"> <img class="header__logo-image"
-                            src="{{ asset('img/logo.png') }}" alt="COACHTECH"></a>
-                @else
-                    <a class="header__logo" href="{{ route('attendance.index') }}"><img class="header__logo-image"
-                            src="{{ asset('img/logo.png') }}" alt="COACHTECH"></a>
-                @endif
-            @else
-                <div class="header__logo"><img class="header__logo-image" src="{{ asset('img/logo.png') }}" alt="COACHTECH">
-                </div>
-            @endauth
+            <div class="header__logo">
+                <img class="header__logo-image" src="{{ asset('img/logo.png') }}" alt="COACHTECH">
+            </div>
 
             @auth
                 @unless (request()->routeIs('verification.notice'))
