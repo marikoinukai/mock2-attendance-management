@@ -311,6 +311,7 @@ button {
 .detail-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .detail-table th,
@@ -330,6 +331,13 @@ button {
 .detail-table td {
     color: #000;
     font-weight: bold;
+}
+
+.detail-comment-cell {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.6;
 }
 
 .detail-table__separator {

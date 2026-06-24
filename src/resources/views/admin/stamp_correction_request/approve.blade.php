@@ -46,7 +46,9 @@
 
                 <tr>
                     <th>備考</th>
-                    <td>{{ $correctionRequest->requested_comment }}</td>
+                    <td class="detail-comment-cell">
+                        {{ $correctionRequest->requested_comment }}
+                    </td>
                 </tr>
             </table>
         </div>
