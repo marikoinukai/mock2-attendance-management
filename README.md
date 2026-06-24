@@ -561,7 +561,7 @@ docker compose exec php php artisan test
 確認時点の結果は以下です。
 
 ```text
-Tests:  81 passed
+Tests:  85 passed
 ```
 
 ### 作成済みテスト
@@ -583,6 +583,7 @@ Tests:  81 passed
 - 勤怠修正申請テスト
 - 管理者勤怠一覧テスト
 - 管理者勤怠詳細・修正テスト
+- 管理者修正申請承認テスト
 - スタッフ一覧テスト
 - スタッフ別勤怠一覧・CSV出力テスト
 - 勤怠レポートテスト
