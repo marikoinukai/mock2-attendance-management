@@ -26,6 +26,21 @@ class RegisterTest extends TestCase
         ]);
     }
 
+    public function test_name_must_be_20_characters_or_less()
+    {
+        $response = $this->from('/register')->post('/register', [
+            'name' => str_repeat('あ', 21),
+            'email' => 'user1@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertRedirect('/register');
+        $response->assertSessionHasErrors([
+            'name' => 'お名前は20文字以内で入力してください',
+        ]);
+    }
+
     public function test_email_is_required()
     {
         $response = $this->from('/register')->post('/register', [
