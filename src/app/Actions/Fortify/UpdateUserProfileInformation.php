@@ -18,7 +18,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     public function update(User $user, array $input): void
     {
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:20'],
 
             'email' => [
                 'required',
@@ -27,6 +27,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+        ], [
+            'name.required' => 'お名前を入力してください',
+            'name.max' => 'お名前は20文字以内で入力してください',
+            'email.required' => 'メールアドレスを入力してください',
+            'email.email' => 'メール形式で入力してください',
         ])->validateWithBag('updateProfileInformation');
 
         if ($input['email'] !== $user->email &&
