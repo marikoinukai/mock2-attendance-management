@@ -48,7 +48,7 @@
                             {{ $correctionRequest->attendanceRecord->work_date->format('Y/m/d') }}
                         </td>
 
-                        <td>
+                        <td class="comment-cell">
                             {{ $correctionRequest->requested_comment }}
                         </td>
 
