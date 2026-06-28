@@ -21,6 +21,10 @@ button {
     font-family: inherit;
 }
 
+.body--auth {
+    background: #fff;
+}
+
 /* ==============================
    Header
 ============================== */
@@ -215,10 +219,11 @@ button {
 ============================== */
 .attendance-stamp {
     min-height: 520px;
+    padding-top: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .attendance-stamp__status {
@@ -236,9 +241,43 @@ button {
 }
 
 .attendance-stamp__time {
-    margin: 24px 0 0;
+    margin: 20px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
     font-size: 80px;
-    font-weight: bold;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.attendance-stamp__colon {
+    width: 14px;
+    height: 54px;
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    transform: translateY(-2px);
+}
+
+.attendance-stamp__colon::before,
+.attendance-stamp__colon::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #000;
+    transform: translateX(-50%);
+}
+
+.attendance-stamp__colon::before {
+    top: 9px;
+}
+
+.attendance-stamp__colon::after {
+    bottom: 9px;
 }
 
 .attendance-stamp__buttons {

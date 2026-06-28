@@ -9,7 +9,7 @@
     @stack('css')
 </head>
 
-<body>
+<body class="{{ request()->is('register', 'login', 'admin/login', 'email/verify') ? 'body--auth' : '' }}">
     <header class="header">
         <div class="header__inner">
             <div class="header__logo">

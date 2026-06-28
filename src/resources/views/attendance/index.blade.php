@@ -27,7 +27,9 @@
         </p>
 
         <p class="attendance-stamp__time">
-            {{ $currentDateTime->format('H:i') }}
+            <span>{{ $currentDateTime->format('H') }}</span>
+            <span class="attendance-stamp__colon"></span>
+            <span>{{ $currentDateTime->format('i') }}</span>
         </p>
 
         <div class="attendance-stamp__buttons">
