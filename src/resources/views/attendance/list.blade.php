@@ -9,7 +9,7 @@
         <div class="month-nav">
             <a class="month-nav__link"
                 href="{{ route('attendance.list', ['month' => $targetMonth->copy()->subMonth()->format('Y-m')]) }}">
-                ← 前月
+                <span class="month-nav__arrow">←</span> 前月
             </a>
 
             <div class="month-nav__current">
@@ -19,7 +19,7 @@
 
             <a class="month-nav__link"
                 href="{{ route('attendance.list', ['month' => $targetMonth->copy()->addMonth()->format('Y-m')]) }}">
-                翌月 →
+                翌月 <span class="month-nav__arrow">→</span>
             </a>
         </div>
 
@@ -86,6 +86,8 @@
                         <td>
                             @if ($record)
                                 <a href="{{ route('attendance.detail', $record->id) }}">詳細</a>
+                            @else
+                                <span class="attendance-table__detail-text">詳細</span>
                             @endif
                         </td>
                     </tr>

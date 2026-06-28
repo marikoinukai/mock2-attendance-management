@@ -233,6 +233,7 @@ button {
     color: #696969;
     font-size: 18px;
     font-weight: bold;
+    letter-spacing: 0.1em;
 }
 
 .attendance-stamp__date {
@@ -300,6 +301,7 @@ button {
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
+    letter-spacing: 0.1em;
 }
 
 .attendance-stamp__button--black {
@@ -338,6 +340,79 @@ button {
     color: #000;
 }
 
+/* 勤怠一覧：前月・翌月リンク */
+.month-nav__link {
+    color: #9a9a9a;
+    font-weight: 800;
+}
+
+/* 勤怠一覧：詳細リンクだけ黒にする */
+.attendance-table td:nth-child(6) a {
+    color: #000;
+    font-weight: bold;
+}
+
+/* 勤怠一覧：通常の行の線を少し太くする */
+.attendance-table th,
+.attendance-table td {
+    border-bottom: 2px solid #e5e5e5;
+}
+
+/* 勤怠一覧：見出しの下線だけさらに太くする */
+.attendance-table thead th {
+    border-bottom: 3px solid #dcdcdc;
+}
+
+.month-nav__arrow {
+    color: #c8c8c8;
+    font-size: 18px;
+    font-weight: 900;
+    display: inline-block;
+    transform: scaleX(1.25);
+    text-shadow: 0.5px 0 #c8c8c8;
+}
+
+.attendance-table {
+    table-layout: fixed;
+}
+
+.attendance-table th:nth-child(1),
+.attendance-table td:nth-child(1) {
+    width: 22%;
+}
+
+.attendance-table th:nth-child(2),
+.attendance-table td:nth-child(2),
+.attendance-table th:nth-child(3),
+.attendance-table td:nth-child(3),
+.attendance-table th:nth-child(4),
+.attendance-table td:nth-child(4),
+.attendance-table th:nth-child(5),
+.attendance-table td:nth-child(5) {
+    width: 15%;
+}
+
+.attendance-table th:nth-child(6),
+.attendance-table td:nth-child(6) {
+    width: 18%;
+}
+
+.attendance-table th:first-child {
+    text-align: left;
+    padding-left: 60px;
+}
+
+.attendance-table td {
+    letter-spacing: 0.08em;
+}
+
+/* 勤怠一覧：リンクなし詳細の追加*/
+.attendance-table__detail-text {
+    color: #000;
+    font-weight: bold;
+    letter-spacing: 0;
+}
+
 /* ==============================
    Detail Pages
 ============================== */
@@ -356,7 +431,7 @@ button {
 .detail-table th,
 .detail-table td {
     padding: 24px 32px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 2px solid #e0e0e0;
     font-size: 16px;
 }
 
@@ -370,6 +445,20 @@ button {
 .detail-table td {
     color: #000;
     font-weight: bold;
+}
+
+.detail-date-group {
+    display: flex;
+    align-items: center;
+}
+
+.detail-date-group span {
+    width: 120px;
+    text-align: center;
+}
+
+.detail-date-group span + span {
+    margin-left: 96px;
 }
 
 .detail-comment-cell {
@@ -396,6 +485,13 @@ button {
     font-size: 16px;
     font-weight: bold;
     text-align: center;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
 }
 
 .comment-input {
@@ -413,6 +509,10 @@ button {
     text-align: right;
 }
 
+.detail-button-area .form-button {
+    letter-spacing: 0.12em;
+}
+
 .detail-link-area {
     margin-top: 24px;
     text-align: right;
@@ -423,6 +523,12 @@ button {
     color: #000;
     font-weight: bold;
     text-decoration: underline;
+}
+
+.detail-name-text {
+    display: inline-block;
+    width: 120px;
+    text-align: center;
 }
 
 /* ==============================
