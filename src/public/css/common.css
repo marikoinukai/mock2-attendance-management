@@ -802,7 +802,7 @@ button {
 .report-page {
     width: 100%;
     min-height: calc(100vh - 64px);
-    padding: 48px 0;
+    padding: 32px 0;
     background: #fff;
 }
 
@@ -825,7 +825,7 @@ button {
 }
 
 .report__section {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .report__heading {
@@ -841,7 +841,7 @@ button {
 }
 
 .report__summary-card {
-    padding: 20px 24px;
+    padding: 16px 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background: #f7f7f7;
@@ -864,9 +864,25 @@ button {
     background: #fff;
 }
 
+.report__table th {
+    color: #000;
+}
+
+.report__table th,
+.report__table td {
+    padding: 10px 16px;
+}
+
 .report__table th:first-child,
 .report__table td:first-child {
     text-align: left;
+}
+
+.report__table th:nth-child(2),
+.report__table td:nth-child(2),
+.report__table th:nth-child(3),
+.report__table td:nth-child(3) {
+    text-align: right;
 }
 
 .report__table td {
