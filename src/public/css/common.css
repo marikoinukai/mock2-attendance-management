@@ -589,6 +589,7 @@ button {
 ============================== */
 .request-tabs {
     margin-bottom: 32px;
+    padding-left: 32px;
     display: flex;
     gap: 48px;
     border-bottom: 1px solid #000;
@@ -597,12 +598,31 @@ button {
 .request-tabs__link {
     padding: 0 16px 16px;
     color: #000;
+    /* color: #9a9a9a; */
     font-size: 16px;
-    font-weight: bold;
+    /* font-weight: bold; */
+    letter-spacing: 0.08em;
 }
 
 .request-tabs__link--active {
-    border-bottom: 3px solid #000;
+    color: #000;
+    font-weight: bold;
+    border-bottom: none;
+    letter-spacing: 0.08em;
+}
+
+.request-table thead th {
+    border-bottom: 3px solid #dcdcdc;
+}
+
+.request-table th:not(:first-child) {
+    text-align: left;
+    padding-left: 28px;
+}
+
+.request-table th,
+.request-table td {
+    letter-spacing: 0.08em;
 }
 
 .request-table td {
@@ -610,9 +630,14 @@ button {
     font-weight: bold;
 }
 
+.request-table td:nth-child(4) {
+    text-align: left;
+    padding-left: 30px;
+}
+
 .comment-cell {
-    width: 240px;
-    max-width: 240px;
+    width: 200px;
+    max-width: 200px;
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
