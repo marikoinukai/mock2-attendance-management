@@ -3,7 +3,7 @@
 @section('title', '勤怠詳細')
 
 @section('content')
-    <section class="attendance-detail">
+    <section class="attendance-detail {{ $pendingCorrectionRequest ? 'attendance-detail--pending' : '' }}">
         <h1 class="page-title">勤怠詳細</h1>
 
         @if (session('status'))
@@ -31,9 +31,11 @@
                     <tr>
                         <th>出勤・退勤</th>
                         <td>
-                            {{ $attendanceRecord->clock_in ? \Carbon\Carbon::parse($attendanceRecord->clock_in)->format('H:i') : '' }}
-                            <span class="detail-table__separator">〜</span>
-                            {{ $attendanceRecord->clock_out ? \Carbon\Carbon::parse($attendanceRecord->clock_out)->format('H:i') : '' }}
+                            <div class="detail-time-text-group">
+                                <span>{{ $attendanceRecord->clock_in ? \Carbon\Carbon::parse($attendanceRecord->clock_in)->format('H:i') : '' }}</span>
+                                <span class="detail-time-text-separator">〜</span>
+                                <span>{{ $attendanceRecord->clock_out ? \Carbon\Carbon::parse($attendanceRecord->clock_out)->format('H:i') : '' }}</span>
+                            </div>
                         </td>
                     </tr>
 
@@ -41,16 +43,20 @@
                         <tr>
                             <th>{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                             <td>
-                                {{ $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '' }}
-                                <span class="detail-table__separator">〜</span>
-                                {{ $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '' }}
+                                <div class="detail-time-text-group">
+                                    <span>{{ $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '' }}</span>
+                                    <span class="detail-time-text-separator">〜</span>
+                                    <span>{{ $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '' }}</span>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
 
                     <tr>
                         <th>備考</th>
-                        <td>{{ $attendanceRecord->comment ?? '' }}</td>
+                        <td>
+                            <span class="detail-comment-text">{{ $attendanceRecord->comment ?? '' }}</span>
+                        </td>
                     </tr>
                 </table>
             </div>

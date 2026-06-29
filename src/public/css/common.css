@@ -416,6 +416,10 @@ button {
 /* ==============================
    Detail Pages
 ============================== */
+.attendance-detail--pending .page-title {
+    margin-bottom: 64px;
+}
+
 .detail-card {
     background: #fff;
     border-radius: 8px;
@@ -433,6 +437,7 @@ button {
     padding: 24px 32px;
     border-bottom: 2px solid #e0e0e0;
     font-size: 16px;
+    letter-spacing: 0.08em;
 }
 
 .detail-table th {
@@ -470,6 +475,28 @@ button {
 
 .detail-table__separator {
     margin: 0 40px;
+}
+
+.detail-time-text-group {
+    display: flex;
+    align-items: center;
+}
+
+.detail-time-text-group span:first-child,
+.detail-time-text-group span:last-child {
+    width: 120px;
+    text-align: center;
+}
+
+.detail-time-text-separator {
+    margin: 0 40px;
+}
+
+.detail-comment-text {
+    display: inline-block;
+    width: 120px;
+    text-align: center;
+    font-size: 14px;
 }
 
 .time-input-group {
@@ -528,6 +555,7 @@ button {
 .detail-name-text {
     display: inline-block;
     width: 120px;
+    margin-left: 10px;
     text-align: center;
 }
 
@@ -549,9 +577,11 @@ button {
 
 .pending-message {
     margin-top: 16px;
+    text-align: right;
     color: #f00;
     font-size: 16px;
     font-weight: bold;
+    letter-spacing: 0.08em;
 }
 
 /* ==============================
