@@ -15,13 +15,18 @@
                 <table class="detail-table">
                     <tr>
                         <th>名前</th>
-                        <td>{{ $attendance->user->name }}</td>
+                        <td>
+                            <span class="detail-name-text">{{ $attendance->user->name }}</span>
+                        </td>
                     </tr>
 
                     <tr>
                         <th>日付</th>
                         <td>
-                            {{ $attendance->work_date->format('Y年n月j日') }}
+                            <div class="detail-date-group">
+                                <span>{{ $attendance->work_date->format('Y年') }}</span>
+                                <span>{{ $attendance->work_date->format('n月j日') }}</span>
+                            </div>
                         </td>
                     </tr>
 
@@ -47,7 +52,9 @@
 
                     <tr>
                         <th>備考</th>
-                        <td>{{ $attendance->comment ?? '' }}</td>
+                        <td>
+                            <span class="detail-comment-text">{{ $attendance->comment ?? '' }}</span>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -69,13 +76,18 @@
                     <table class="detail-table">
                         <tr>
                             <th>名前</th>
-                            <td>{{ $attendance->user->name }}</td>
+                            <td>
+                                <span class="detail-name-text">{{ $attendance->user->name }}</span>
+                            </td>
                         </tr>
 
                         <tr>
                             <th>日付</th>
                             <td>
-                                {{ $attendance->work_date->format('Y年n月j日') }}
+                                <div class="detail-date-group">
+                                    <span>{{ $attendance->work_date->format('Y年') }}</span>
+                                    <span>{{ $attendance->work_date->format('n月j日') }}</span>
+                                </div>
                             </td>
                         </tr>
 
@@ -83,12 +95,12 @@
                             <th>出勤・退勤</th>
                             <td>
                                 <div class="time-input-group">
-                                    <input class="time-input" type="time" name="clock_in"
+                                    <input class="time-input" type="text" name="clock_in"
                                         value="{{ old('clock_in', $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '') }}">
 
                                     <span class="detail-table__separator">〜</span>
 
-                                    <input class="time-input" type="time" name="clock_out"
+                                    <input class="time-input" type="text" name="clock_out"
                                         value="{{ old('clock_out', $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '') }}">
                                 </div>
 
@@ -107,13 +119,13 @@
                                 <th>休憩{{ $loop->iteration }}</th>
                                 <td>
                                     <div class="time-input-group">
-                                        <input class="time-input" type="time"
+                                        <input class="time-input" type="text"
                                             name="breaks[{{ $break->id }}][break_start]"
                                             value="{{ old('breaks.' . $break->id . '.break_start', $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}">
 
                                         <span class="detail-table__separator">〜</span>
 
-                                        <input class="time-input" type="time"
+                                        <input class="time-input" type="text"
                                             name="breaks[{{ $break->id }}][break_end]"
                                             value="{{ old('breaks.' . $break->id . '.break_end', $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
                                     </div>
@@ -133,12 +145,12 @@
                             <th>休憩{{ $attendance->breaks->count() + 1 }}</th>
                             <td>
                                 <div class="time-input-group">
-                                    <input class="time-input" type="time" name="new_break[break_start]"
+                                    <input class="time-input" type="text" name="new_break[break_start]"
                                         value="{{ old('new_break.break_start') }}">
 
                                     <span class="detail-table__separator">〜</span>
 
-                                    <input class="time-input" type="time" name="new_break[break_end]"
+                                    <input class="time-input" type="text" name="new_break[break_end]"
                                         value="{{ old('new_break.break_end') }}">
                                 </div>
 

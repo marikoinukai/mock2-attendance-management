@@ -323,6 +323,11 @@ button {
 /* ==============================
    Attendance List Tables
 ============================== */
+.admin-attendance-table thead th,
+.staff-table thead th {
+    border-bottom: 3px solid #dcdcdc;
+}
+
 .attendance-table td,
 .admin-attendance-table td,
 .staff-table td,
@@ -618,6 +623,12 @@ button {
 .request-table th:not(:first-child) {
     text-align: left;
     padding-left: 28px;
+}
+
+.request-table--admin th:first-child,
+.request-table--admin td:first-child {
+    text-align: left;
+    padding-left: 36px;
 }
 
 .request-table th,

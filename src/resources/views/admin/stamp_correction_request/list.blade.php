@@ -18,7 +18,7 @@
             </a>
         </div>
 
-        <table class="table request-table">
+        <table class="table request-table request-table--admin">
             <thead>
                 <tr>
                     <th>状態</th>
