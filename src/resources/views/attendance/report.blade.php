@@ -57,7 +57,7 @@
                 <h2 class="report__heading">今月の異常検知</h2>
 
                 <p class="report__note">
-                    基準: 始業 09:00 / 終業 18:00 / 長時間労働は１日10時間超過
+                    基準: 始業 09:00 / 終業 18:00 / 長時間労働は１日10時間超
                 </p>
 
                 <div class="report__summary-grid">
