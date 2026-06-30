@@ -41,7 +41,7 @@
 
                     @foreach ($attendance->breaks as $break)
                         <tr>
-                            <th>休憩{{ $loop->iteration }}</th>
+                            <th>{{ $loop->first ? '休憩' : '休憩' . $loop->iteration }}</th>
                             <td>
                                 {{ $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '' }}
                                 <span class="detail-table__separator">〜</span>
@@ -116,7 +116,7 @@
 
                         @foreach ($attendance->breaks as $break)
                             <tr>
-                                <th>休憩{{ $loop->iteration }}</th>
+                                <th>{{ $loop->first ? '休憩' : '休憩' . $loop->iteration }}</th>
                                 <td>
                                     <div class="time-input-group">
                                         <input class="time-input" type="text"
@@ -182,12 +182,5 @@
                 </div>
             </form>
         @endif
-
-        <div class="detail-link-area">
-            <a class="back-link"
-                href="{{ route('admin.attendance.index', ['date' => $attendance->work_date->format('Y-m-d')]) }}">
-                勤怠一覧に戻る
-            </a>
-        </div>
     </section>
 @endsection

@@ -12,7 +12,7 @@
                     'id' => $staff->id,
                     'month' => $targetMonth->copy()->subMonth()->format('Y-m'),
                 ]) }}">
-                ← 前月
+                <span class="month-nav__arrow">←</span> 前月
             </a>
 
             <div class="month-nav__current">
@@ -25,7 +25,7 @@
                     'id' => $staff->id,
                     'month' => $targetMonth->copy()->addMonth()->format('Y-m'),
                 ]) }}">
-                翌月 →
+                翌月 <span class="month-nav__arrow">→</span>
             </a>
         </div>
 
@@ -91,6 +91,8 @@
                         <td>
                             @if ($record)
                                 <a href="{{ route('admin.attendance.show', $record->id) }}">詳細</a>
+                            @else
+                                <span class="attendance-table__detail-text">詳細</span>
                             @endif
                         </td>
                     </tr>
@@ -105,12 +107,6 @@
                     'month' => $targetMonth->format('Y-m'),
                 ]) }}">
                 CSV出力
-            </a>
-        </div>
-
-        <div class="detail-link-area">
-            <a class="back-link" href="{{ route('admin.staff.index') }}">
-                スタッフ一覧へ戻る
             </a>
         </div>
     </section>

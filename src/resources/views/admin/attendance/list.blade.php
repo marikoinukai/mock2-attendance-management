@@ -9,7 +9,7 @@
         <div class="date-nav">
             <a class="date-nav__link"
                 href="{{ route('admin.attendance.index', ['date' => $targetDate->copy()->subDay()->format('Y-m-d')]) }}">
-                ← 前日
+                <span class="date-nav__arrow">←</span> 前日
             </a>
 
             <div class="date-nav__current">
@@ -19,7 +19,7 @@
 
             <a class="date-nav__link"
                 href="{{ route('admin.attendance.index', ['date' => $targetDate->copy()->addDay()->format('Y-m-d')]) }}">
-                翌日 →
+                翌日 <span class="date-nav__arrow">→</span>
             </a>
         </div>
 

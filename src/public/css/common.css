@@ -323,9 +323,34 @@ button {
 /* ==============================
    Attendance List Tables
 ============================== */
+.staff-table {
+    margin-top: 64px;
+}
+
 .admin-attendance-table thead th,
 .staff-table thead th {
     border-bottom: 3px solid #dcdcdc;
+}
+
+.admin-attendance-table th,
+.admin-attendance-table td {
+    letter-spacing: 0.08em;
+}
+
+.staff-attendance-table th,
+.staff-attendance-table td {
+    letter-spacing: 0.08em;
+}
+
+.staff-attendance-table th:first-child {
+    text-align: left;
+    padding-left: 54px;
+}
+
+.staff-attendance-table th:nth-child(6),
+.staff-attendance-table td:nth-child(6) {
+    text-align: left;
+    padding-left: 40px;
 }
 
 .attendance-table td,
@@ -368,7 +393,8 @@ button {
     border-bottom: 3px solid #dcdcdc;
 }
 
-.month-nav__arrow {
+.month-nav__arrow,
+.date-nav__arrow {
     color: #c8c8c8;
     font-size: 18px;
     font-weight: 900;
@@ -416,6 +442,32 @@ button {
     color: #000;
     font-weight: bold;
     letter-spacing: 0;
+}
+
+/* スタッフ一覧：文字間隔 */
+.staff-table th,
+.staff-table td {
+    letter-spacing: 0.08em;
+}
+
+/* スタッフ一覧：列幅を調整して左右の余白を広げる */
+.staff-table {
+    table-layout: fixed;
+}
+
+.staff-table th:nth-child(1),
+.staff-table td:nth-child(1) {
+    width: 40%;
+}
+
+.staff-table th:nth-child(2),
+.staff-table td:nth-child(2) {
+    width: 20%;
+}
+
+.staff-table th:nth-child(3),
+.staff-table td:nth-child(3) {
+    width: 40%;
 }
 
 /* ==============================
