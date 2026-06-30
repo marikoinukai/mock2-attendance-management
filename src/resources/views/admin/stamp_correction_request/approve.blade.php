@@ -70,12 +70,5 @@
                 <span class="approved-label">承認済み</span>
             </div>
         @endif
-
-        <div class="detail-link-area">
-            <a class="back-link"
-                href="{{ route('attendance_correction_requests.index', ['status' => $correctionRequest->status]) }}">
-                申請一覧へ戻る
-            </a>
-        </div>
     </section>
 @endsection

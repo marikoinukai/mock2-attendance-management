@@ -779,6 +779,11 @@ button {
     text-align: center;
 }
 
+.approve-form .form-button,
+.approved-label {
+    letter-spacing: 0.08em;
+}
+
 /* ==============================
    Auth Pages
 ============================== */
