@@ -536,6 +536,10 @@ button {
     resize: vertical;
 }
 
+.attendance-detail--admin .comment-input {
+    font-size: 14px;
+}
+
 .detail-button-area {
     margin-top: 32px;
     text-align: right;
@@ -562,6 +566,29 @@ button {
     width: 120px;
     margin-left: 10px;
     text-align: center;
+}
+
+.attendance-detail--approval .detail-name-text,
+.attendance-detail--approval .detail-comment-text {
+    width: auto;
+    margin-left: 0;
+    text-align: left;
+}
+
+.attendance-detail--approval .detail-date-group {
+    display: grid;
+    grid-template-columns: 120px 36px 120px;
+    align-items: center;
+}
+
+.attendance-detail--approval .detail-date-group span {
+    width: auto;
+    text-align: left;
+}
+
+.attendance-detail--approval .detail-date-group span + span {
+    grid-column: 3;
+    margin-left: 0;
 }
 
 /* ==============================

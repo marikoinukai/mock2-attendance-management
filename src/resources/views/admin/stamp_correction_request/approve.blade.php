@@ -3,7 +3,7 @@
 @section('title', '管理者 修正申請承認')
 
 @section('content')
-    <section class="attendance-detail">
+    <section class="attendance-detail attendance-detail--approval">
         <h1 class="page-title">勤怠詳細</h1>
 
         @if (session('status'))
@@ -14,13 +14,17 @@
             <table class="detail-table">
                 <tr>
                     <th>名前</th>
-                    <td>{{ $correctionRequest->user->name }}</td>
-                </tr>
+                    <td>
+                        <span class="detail-name-text">{{ $correctionRequest->user->name }}</span>
+                    </td>
 
                 <tr>
                     <th>日付</th>
                     <td>
-                        {{ $correctionRequest->attendanceRecord->work_date->format('Y年n月j日') }}
+                        <div class="detail-date-group">
+                            <span>{{ $correctionRequest->attendanceRecord->work_date->format('Y年') }}</span>
+                            <span>{{ $correctionRequest->attendanceRecord->work_date->format('n月j日') }}</span>
+                        </div>
                     </td>
                 </tr>
 
@@ -46,8 +50,8 @@
 
                 <tr>
                     <th>備考</th>
-                    <td class="detail-comment-cell">
-                        {{ $correctionRequest->requested_comment }}
+                    <td>
+                        <span class="detail-comment-text">{{ $correctionRequest->requested_comment }}</span>
                     </td>
                 </tr>
             </table>
