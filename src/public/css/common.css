@@ -600,7 +600,8 @@ button {
     resize: vertical;
 }
 
-.attendance-detail--admin .comment-input {
+.attendance-detail--admin .comment-input,
+.attendance-detail--staff .comment-input {
     font-size: 14px;
 }
 

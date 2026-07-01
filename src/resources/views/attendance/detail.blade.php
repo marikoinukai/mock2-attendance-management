@@ -3,7 +3,8 @@
 @section('title', '勤怠詳細')
 
 @section('content')
-    <section class="attendance-detail {{ $pendingCorrectionRequest ? 'attendance-detail--pending' : '' }}">
+    <section
+        class="attendance-detail attendance-detail--staff {{ $pendingCorrectionRequest ? 'attendance-detail--pending' : '' }}">
         <h1 class="page-title">勤怠詳細</h1>
 
         @if (session('status'))
