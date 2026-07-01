@@ -17,8 +17,11 @@ class AdminCorrectionRequestController extends Controller
             'attendanceRecord',
             'correctionBreaks',
         ])
-            ->where('status', $status)
-            ->latest()
+            ->join('attendance_records', 'attendance_correction_requests.attendance_record_id', '=', 'attendance_records.id')
+            ->select('attendance_correction_requests.*')
+            ->where('attendance_correction_requests.status', $status)
+            ->orderBy('attendance_records.work_date', 'asc')
+            ->orderBy('attendance_correction_requests.created_at', 'asc')
             ->get();
 
         return view('admin.stamp_correction_request.list', compact(

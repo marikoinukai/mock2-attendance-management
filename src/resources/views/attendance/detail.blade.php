@@ -22,7 +22,11 @@
                     <tr>
                         <th>日付</th>
                         <td>
-                            <div class="detail-date-group">
+                            <span class="visually-hidden">
+                                {{ $attendanceRecord->work_date->format('Y年n月j日') }}
+                            </span>
+
+                            <div class="detail-date-group" aria-hidden="true">
                                 <span>{{ $attendanceRecord->work_date->format('Y年') }}</span>
                                 <span>{{ $attendanceRecord->work_date->format('n月j日') }}</span>
                             </div>
@@ -78,7 +82,11 @@
                         <tr>
                             <th>日付</th>
                             <td>
-                                <div class="detail-date-group">
+                                <span class="visually-hidden">
+                                    {{ $attendanceRecord->work_date->format('Y年n月j日') }}
+                                </span>
+
+                                <div class="detail-date-group" aria-hidden="true">
                                     <span>{{ $attendanceRecord->work_date->format('Y年') }}</span>
                                     <span>{{ $attendanceRecord->work_date->format('n月j日') }}</span>
                                 </div>

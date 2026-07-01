@@ -3,7 +3,7 @@
 @section('title', '管理者 勤怠詳細')
 
 @section('content')
-    <section class="attendance-detail">
+    <section class="attendance-detail attendance-detail--admin">
         <h1 class="page-title">勤怠詳細</h1>
 
         @if (session('status'))
@@ -23,7 +23,11 @@
                     <tr>
                         <th>日付</th>
                         <td>
-                            <div class="detail-date-group">
+                            <span class="visually-hidden">
+                                {{ $attendance->work_date->format('Y年n月j日') }}
+                            </span>
+
+                            <div class="detail-date-group" aria-hidden="true">
                                 <span>{{ $attendance->work_date->format('Y年') }}</span>
                                 <span>{{ $attendance->work_date->format('n月j日') }}</span>
                             </div>
@@ -84,7 +88,11 @@
                         <tr>
                             <th>日付</th>
                             <td>
-                                <div class="detail-date-group">
+                                <span class="visually-hidden">
+                                    {{ $attendance->work_date->format('Y年n月j日') }}
+                                </span>
+
+                                <div class="detail-date-group" aria-hidden="true">
                                     <span>{{ $attendance->work_date->format('Y年') }}</span>
                                     <span>{{ $attendance->work_date->format('n月j日') }}</span>
                                 </div>

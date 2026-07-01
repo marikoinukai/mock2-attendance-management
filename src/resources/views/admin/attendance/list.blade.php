@@ -60,32 +60,30 @@
                         }
                     @endphp
 
-                    <tr>
-                        <td>{{ $staff->name }}</td>
-                        <td>
-                            {{ $record && $record->clock_in ? \Carbon\Carbon::parse($record->clock_in)->format('H:i') : '' }}
-                        </td>
-                        <td>
-                            {{ $record && $record->clock_out ? \Carbon\Carbon::parse($record->clock_out)->format('H:i') : '' }}
-                        </td>
-                        <td>
-                            @if ($breakMinutes > 0)
-                                {{ floor($breakMinutes / 60) }}:{{ sprintf('%02d', $breakMinutes % 60) }}
-                            @endif
-                        </td>
-                        <td>
-                            @if (!is_null($workMinutes))
-                                {{ floor($workMinutes / 60) }}:{{ sprintf('%02d', $workMinutes % 60) }}
-                            @endif
-                        </td>
-                        <td>
-                            @if ($record)
+                    @if ($record)
+                        <tr>
+                            <td>{{ $staff->name }}</td>
+                            <td>
+                                {{ $record->clock_in ? \Carbon\Carbon::parse($record->clock_in)->format('H:i') : '' }}
+                            </td>
+                            <td>
+                                {{ $record->clock_out ? \Carbon\Carbon::parse($record->clock_out)->format('H:i') : '' }}
+                            </td>
+                            <td>
+                                @if ($breakMinutes > 0)
+                                    {{ floor($breakMinutes / 60) }}:{{ sprintf('%02d', $breakMinutes % 60) }}
+                                @endif
+                            </td>
+                            <td>
+                                @if (!is_null($workMinutes))
+                                    {{ floor($workMinutes / 60) }}:{{ sprintf('%02d', $workMinutes % 60) }}
+                                @endif
+                            </td>
+                            <td>
                                 <a href="{{ route('admin.attendance.show', $record->id) }}">詳細</a>
-                            @else
-                                -
-                            @endif
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>

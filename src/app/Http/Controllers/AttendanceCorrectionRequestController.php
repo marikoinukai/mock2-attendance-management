@@ -23,9 +23,12 @@ class AttendanceCorrectionRequestController extends Controller
             'attendanceRecord',
             'correctionBreaks',
         ])
-            ->where('user_id', $user->id)
-            ->where('status', $status)
-            ->latest()
+            ->join('attendance_records', 'attendance_correction_requests.attendance_record_id', '=', 'attendance_records.id')
+            ->select('attendance_correction_requests.*')
+            ->where('attendance_correction_requests.user_id', $user->id)
+            ->where('attendance_correction_requests.status', $status)
+            ->orderBy('attendance_records.work_date', 'asc')
+            ->orderBy('attendance_correction_requests.created_at', 'asc')
             ->get();
 
         return view('attendance_correction_requests.index', compact(
