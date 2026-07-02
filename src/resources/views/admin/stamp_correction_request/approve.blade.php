@@ -17,6 +17,7 @@
                     <td>
                         <span class="detail-name-text">{{ $correctionRequest->user->name }}</span>
                     </td>
+                </tr>
 
                 <tr>
                     <th>日付</th>
@@ -47,6 +48,17 @@
                         </td>
                     </tr>
                 @endforeach
+
+                <tr>
+                    <th>
+                        {{ $correctionRequest->correctionBreaks->count() === 0 ? '休憩' : '休憩' . ($correctionRequest->correctionBreaks->count() + 1) }}
+                    </th>
+                    <td>
+                        <span class="time-placeholder">00:00</span>
+                        <span class="detail-table__separator">〜</span>
+                        <span class="time-placeholder">00:00</span>
+                    </td>
+                </tr>
 
                 <tr>
                     <th>備考</th>

@@ -13,10 +13,6 @@ use App\Http\Controllers\AdminCorrectionRequestController;
 use App\Http\Controllers\AdminStaffController;
 use App\Http\Controllers\AttendanceReportController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 /*
 |--------------------------------------------------------------------------
 | 管理者ログイン

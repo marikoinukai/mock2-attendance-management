@@ -546,6 +546,10 @@ button {
     margin: 0 40px;
 }
 
+.time-placeholder {
+    visibility: hidden;
+}
+
 .detail-time-text-group {
     display: flex;
     align-items: center;
