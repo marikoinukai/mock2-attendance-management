@@ -6,10 +6,6 @@
     <section class="attendance-detail attendance-detail--approval">
         <h1 class="page-title">勤怠詳細</h1>
 
-        @if (session('status'))
-            <p class="alert-message">{{ session('status') }}</p>
-        @endif
-
         <div class="detail-card">
             <table class="detail-table">
                 <tr>
