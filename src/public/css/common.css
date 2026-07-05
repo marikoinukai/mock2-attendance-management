@@ -644,6 +644,15 @@ button {
     text-align: left;
 }
 
+.attendance-detail--approval .detail-comment-text {
+    display: block;
+    max-width: 420px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.6;
+}
+
 .attendance-detail--approval .detail-date-group {
     display: grid;
     grid-template-columns: 120px 36px 120px;
