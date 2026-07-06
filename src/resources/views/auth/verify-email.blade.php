@@ -19,10 +19,6 @@
                 </a>
             </div>
 
-            @if (session('status') === 'verification-link-sent')
-                <p class="alert-message">認証メールを再送信しました。</p>
-            @endif
-
             <form class="verify-card__form" method="POST" action="{{ route('verification.send') }}">
                 @csrf
                 <button class="verify-card__resend-button" type="submit">

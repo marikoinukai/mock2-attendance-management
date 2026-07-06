@@ -67,7 +67,7 @@ class RegisterTest extends TestCase
 
         $response->assertRedirect('/register');
         $response->assertSessionHasErrors([
-            'email' => 'メール形式で入力してください',
+            'email' => 'メールアドレスはメール形式で入力してください',
         ]);
     }
 
