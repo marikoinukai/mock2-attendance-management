@@ -14,7 +14,7 @@ class AdminLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'email'],
+            'email' => ['required'],
             'password' => ['required'],
         ];
     }
@@ -23,7 +23,6 @@ class AdminLoginRequest extends FormRequest
     {
         return [
             'email.required' => 'メールアドレスを入力してください',
-            'email.email' => 'メールアドレスはメール形式で入力してください',
             'password.required' => 'パスワードを入力してください',
         ];
     }
