@@ -25,7 +25,7 @@ class AdminAttendanceUpdateRequest extends FormRequest
             'new_break.break_start' => ['nullable', 'date_format:H:i'],
             'new_break.break_end' => ['nullable', 'date_format:H:i'],
 
-            'comment' => ['required', 'string'],
+            'comment' => ['required', 'string', 'max:255'],
         ];
     }
 
@@ -144,6 +144,7 @@ class AdminAttendanceUpdateRequest extends FormRequest
             'new_break.break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください',
 
             'comment.required' => '備考を記入してください',
+            'comment.max' => '備考は255文字以内で入力してください',
         ];
     }
 }

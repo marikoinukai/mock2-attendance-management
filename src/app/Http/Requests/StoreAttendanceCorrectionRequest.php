@@ -25,7 +25,7 @@ class StoreAttendanceCorrectionRequest extends FormRequest
             'requested_new_break.requested_break_start' => ['nullable', 'date_format:H:i'],
             'requested_new_break.requested_break_end' => ['nullable', 'date_format:H:i'],
 
-            'requested_comment' => ['required', 'string'],
+            'requested_comment' => ['required', 'string', 'max:255'],
         ];
     }
 
@@ -144,6 +144,7 @@ class StoreAttendanceCorrectionRequest extends FormRequest
             'requested_new_break.requested_break_end.date_format' => '休憩終了時刻はHH:MM形式で入力してください',
 
             'requested_comment.required' => '備考を記入してください',
+            'requested_comment.max' => '備考は255文字以内で入力してください',
         ];
     }
 }
