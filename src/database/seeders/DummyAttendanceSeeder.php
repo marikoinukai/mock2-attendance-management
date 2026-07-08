@@ -11,10 +11,11 @@ use Carbon\CarbonPeriod;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Collection;
 
 class DummyAttendanceSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $emails = [
             'user1@example.com',
@@ -80,7 +81,7 @@ class DummyAttendanceSeeder extends Seeder
         $this->createGeneralDummyAttendance($user3);
     }
 
-    private function createUser1Attendance(User $user)
+    private function createUser1Attendance(User $user): void
     {
         $currentMonth = now()->startOfMonth();
 
@@ -158,7 +159,7 @@ class DummyAttendanceSeeder extends Seeder
         }
     }
 
-    private function createGeneralDummyAttendance(User $user)
+    private function createGeneralDummyAttendance(User $user): void
     {
         $currentMonth = now()->startOfMonth();
 
@@ -210,7 +211,7 @@ class DummyAttendanceSeeder extends Seeder
         string $breakStart,
         string $breakEnd,
         string $comment
-    ) {
+    ): void {
         $attendanceRecord = AttendanceRecord::create([
             'user_id' => $user->id,
             'work_date' => $date->toDateString(),
@@ -225,7 +226,7 @@ class DummyAttendanceSeeder extends Seeder
         ]);
     }
 
-    private function getWeekdays(Carbon $month, int $count)
+    private function getWeekdays(Carbon $month, int $count): Collection
     {
         $dates = collect();
 
