@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceRecord;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Http\Resources\AttendanceRecordResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Requests\Api\V1\IndexAttendanceRecordRequest;
