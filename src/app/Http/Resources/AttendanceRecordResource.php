@@ -69,7 +69,7 @@ class AttendanceRecordResource extends JsonResource
      * @param mixed $date
      * @return string|null
      */
-    private function formatDate($date): ?string
+    private function formatDate(mixed $date): ?string
     {
         if (is_null($date)) {
             return null;
@@ -84,7 +84,7 @@ class AttendanceRecordResource extends JsonResource
      * @param mixed $time
      * @return string|null
      */
-    private function formatTime($time): ?string
+    private function formatTime(mixed $time): ?string
     {
         if (is_null($time)) {
             return null;
