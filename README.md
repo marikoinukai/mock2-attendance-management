@@ -168,7 +168,7 @@ docker compose exec php php artisan migrate:fresh --seed
 
 #### ユーザー1の勤怠データ
 
-ユーザー1には、勤怠集計画面の確認用として、以下の意図的なデータを作成しています。
+ユーザー1には、勤怠レポート画面の確認用として、以下の意図的なデータを作成しています。
 
 - 過去5ヶ月分：各月の平日15日分、合計75日分
 - 当月分：17日分
@@ -192,7 +192,7 @@ docker compose exec php php artisan migrate:fresh --seed
 - ユーザー2：30日分
 - ユーザー3：30日分
 
-### 勤怠集計画面の確認用データ
+### 勤怠レポート画面の確認用データ
 
 ユーザー1でログインし、`/attendance/report` を開いた場合、以下の値になる想定です。
 
@@ -275,27 +275,48 @@ docker compose exec php php artisan db:seed --class=DummyAttendanceSeeder
 
 ## 主なテーブル
 
+### アプリケーション主要テーブル
+
 - users
 - attendance_records
 - attendance_breaks
 - attendance_correction_requests
 - attendance_correction_breaks
+
+### API認証用テーブル
+
 - personal_access_tokens
+
+※ `personal_access_tokens` は Laravel Sanctum によるAPIトークン認証で使用する補助テーブルです。
+※ ER図では、勤怠管理アプリの主要データ構造である5テーブルを記載しています。
 
 ## URL
 
-| 内容                 | URL                                            |
-| -------------------- | ---------------------------------------------- |
-| 開発環境             | http://localhost/                              |
-| 会員登録             | http://localhost/register                      |
-| 一般ユーザーログイン | http://localhost/login                         |
-| 管理者ログイン       | http://localhost/admin/login                   |
-| 勤怠打刻画面         | http://localhost/attendance                    |
-| 勤怠一覧画面         | http://localhost/attendance/list               |
-| 勤怠レポート画面     | http://localhost/attendance/report             |
-| 修正申請一覧画面     | http://localhost/stamp_correction_request/list |
-| MailHog              | http://localhost:8025/                         |
-| phpMyAdmin           | http://localhost:8080/                         |
+| 内容                   | URL                                                    |
+| ---------------------- | ------------------------------------------------------ |
+| 開発環境               | http://localhost/                                      |
+| 会員登録               | http://localhost/register                              |
+| 一般ユーザーログイン   | http://localhost/login                                 |
+| 管理者ログイン         | http://localhost/admin/login                           |
+| 勤怠打刻画面           | http://localhost/attendance                            |
+| 勤怠一覧画面           | http://localhost/attendance/list                       |
+| 勤怠レポート画面       | http://localhost/attendance/report                     |
+| 修正申請一覧画面       | http://localhost/stamp_correction_request/list         |
+| 管理者日次勤怠一覧画面 | http://localhost/admin/attendance/list                 |
+| スタッフ一覧画面       | http://localhost/admin/staff/list                      |
+| スタッフ別勤怠一覧画面 | http://localhost/admin/attendance/staff/{id}           |
+| スタッフ別勤怠CSV出力  | http://localhost/admin/attendance/staff/{id}/csv       |
+| 修正申請承認画面       | http://localhost/stamp_correction_request/approve/{id} |
+| MailHog                | http://localhost:8025/                                 |
+| phpMyAdmin             | http://localhost:8080/                                 |
+
+phpMyAdminにログインする場合は、以下を使用します。
+
+| 項目       | 値           |
+| ---------- | ------------ |
+| サーバ     | mysql        |
+| ユーザー名 | laravel_user |
+| パスワード | laravel_pass |
 
 ## 公開API
 
@@ -513,6 +534,14 @@ MySQLにログイン後、以下を実行します。
 CREATE DATABASE IF NOT EXISTS attendance_test;
 SHOW DATABASES;
 exit;
+```
+
+### テスト用環境ファイルの作成
+
+`src/.env.testing` が存在しない場合は、以下のコマンドで作成します。
+
+```bash
+cp src/.env.example src/.env.testing
 ```
 
 ### テスト用環境ファイル
