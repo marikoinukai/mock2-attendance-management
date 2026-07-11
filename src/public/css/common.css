@@ -169,10 +169,6 @@ button {
     font-weight: bold;
 }
 
-.month-nav__link {
-    color: #737373;
-}
-
 .month-nav__current {
     display: flex;
     align-items: center;
@@ -689,9 +685,7 @@ button {
 .request-tabs__link {
     padding: 0 16px 16px;
     color: #000;
-    /* color: #9a9a9a; */
     font-size: 16px;
-    /* font-weight: bold; */
     letter-spacing: 0.08em;
 }
 
