@@ -68,47 +68,61 @@ MAIL_FROM_NAME="${APP_NAME}"
 docker compose exec php php artisan key:generate
 ```
 
-5. マイグレーションを実行します。
+5. Laravelが使用するディレクトリの所有者と書き込み権限を設定します。
 
 ```bash
-docker compose exec php php artisan migrate
+sudo chown -R "$USER":www-data src/storage src/bootstrap/cache
+sudo find src/storage src/bootstrap/cache -type d -exec chmod 775 {} \;
+sudo find src/storage src/bootstrap/cache -type f -exec chmod 664 {} \;
 ```
 
-6. シーディングを実行します。
+6. マイグレーションを実行します。
 
 ```bash
-docker compose exec php php artisan db:seed
+docker compose exec --user www-data php php artisan migrate
 ```
 
-7. キャッシュをクリアします。
+7. シーディングを実行します。
 
 ```bash
-docker compose exec php php artisan config:clear
-docker compose exec php php artisan cache:clear
-docker compose exec php php artisan view:clear
+docker compose exec --user www-data php php artisan db:seed
+```
+
+8. キャッシュをクリアします。
+
+```bash
+docker compose exec --user www-data php php artisan config:clear
+docker compose exec --user www-data php php artisan cache:clear
+docker compose exec --user www-data php php artisan view:clear
 ```
 
 ## トラブルシューティング
 
 ### 権限エラーが発生する場合
 
-環境によっては、`storage` や `bootstrap/cache` の書き込み権限が不足し、permission denied エラーが発生することがあります。
+環境によっては、`storage` または `bootstrap/cache` の書き込み権限が不足し、以下のようなエラーが発生することがあります。
 
-その場合は、以下を実行してください。
+```text
+Permission denied
+```
+
+その場合は、プロジェクト直下で以下を実行してください。
 
 ```bash
-docker compose exec php chmod -R 777 storage bootstrap/cache
-docker compose exec php php artisan config:clear
-docker compose exec php php artisan cache:clear
-docker compose exec php php artisan view:clear
+sudo chown -R "$USER":www-data src/storage src/bootstrap/cache
+sudo find src/storage src/bootstrap/cache -type d -exec chmod 775 {} \;
+sudo find src/storage src/bootstrap/cache -type f -exec chmod 664 {} \;
+docker compose exec --user www-data php php artisan optimize:clear
 ```
+
+その後、ブラウザを再読み込みしてください。
 
 ### データベースを作り直したい場合
 
 以下のコマンドで、テーブルをすべて作り直し、Seederでダミーデータを再作成できます。
 
 ```bash
-docker compose exec php php artisan migrate:fresh --seed
+docker compose exec --user www-data php php artisan migrate:fresh --seed
 ```
 
 `migrate:fresh` は既存のテーブルを削除して再作成するため、登録済みデータはすべて削除されます。
@@ -213,14 +227,14 @@ docker compose exec php php artisan migrate:fresh --seed
 以下のコマンドで、データベースを作り直し、Seederでダミーデータを作成します。
 
 ```bash
-docker compose exec php php artisan config:clear
-docker compose exec php php artisan migrate:fresh --seed
+docker compose exec --user www-data php php artisan config:clear
+docker compose exec --user www-data php php artisan migrate:fresh --seed
 ```
 
 既存データを残したまま勤怠ダミーデータのみ作成したい場合は、以下を実行します。
 
 ```bash
-docker compose exec php php artisan db:seed --class=DummyAttendanceSeeder
+docker compose exec --user www-data php php artisan db:seed --class=DummyAttendanceSeeder
 ```
 
 ## 使用技術
@@ -566,8 +580,8 @@ DB_PASSWORD=root
 以下のコマンドで、テスト用データベースにテーブルを作成します。
 
 ```bash
-docker compose exec php php artisan config:clear
-docker compose exec php php artisan migrate --env=testing
+docker compose exec --user www-data php php artisan config:clear
+docker compose exec --user www-data php php artisan migrate --env=testing
 ```
 
 ### テスト実行
@@ -575,21 +589,21 @@ docker compose exec php php artisan migrate --env=testing
 全テストを実行する場合は、以下のコマンドを実行します。
 
 ```bash
-docker compose exec php php artisan test
+docker compose exec --user www-data php php artisan test
 ```
 
 特定のテストファイルのみ実行する場合は、対象ファイルのパスを指定します。
 
 ```bash
-docker compose exec php php artisan test tests/Feature/Auth/RegisterTest.php
-docker compose exec php php artisan test tests/Feature/Auth/LoginTest.php
-docker compose exec php php artisan test tests/Feature/Attendance/AttendanceStampTest.php
+docker compose exec --user www-data php php artisan test tests/Feature/Auth/RegisterTest.php
+docker compose exec --user www-data php php artisan test tests/Feature/Auth/LoginTest.php
+docker compose exec --user www-data php php artisan test tests/Feature/Attendance/AttendanceStampTest.php
 ```
 
 特定のテストメソッドのみ実行する場合は、`--filter` を使用します。
 
 ```bash
-docker compose exec php php artisan test --filter=test_user_can_register
+docker compose exec --user www-data php php artisan test --filter=test_user_can_register
 ```
 
 ※ `tests/...` のパスはPHPコンテナ内でのパスです。`php artisan test` 実行時は `src/` を付けません。
@@ -599,7 +613,7 @@ docker compose exec php php artisan test --filter=test_user_can_register
 以下のコマンドで全テストが通過することを確認しています。
 
 ```bash
-docker compose exec php php artisan test
+docker compose exec --user www-data php php artisan test
 ```
 
 確認時点の結果は以下です。
