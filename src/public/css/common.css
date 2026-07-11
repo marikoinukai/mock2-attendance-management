@@ -114,11 +114,6 @@ button {
     font-weight: bold;
 }
 
-.content-card {
-    background: #fff;
-    border-radius: 8px;
-}
-
 /* ==============================
    Common Table / Button
 ============================== */
@@ -535,13 +530,6 @@ button {
     margin-left: 96px;
 }
 
-.detail-comment-cell {
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    line-height: 1.6;
-}
-
 .detail-table__separator {
     margin: 0 40px;
 }
@@ -623,8 +611,7 @@ button {
     text-align: right;
 }
 
-.approve-link,
-.back-link {
+.approve-link {
     color: #000;
     font-weight: bold;
     text-decoration: underline;
@@ -676,12 +663,6 @@ button {
     margin: 8px 0 0;
     color: #f00;
     font-size: 14px;
-    font-weight: bold;
-}
-
-.alert-message {
-    margin: 0 0 24px;
-    color: #007700;
     font-weight: bold;
 }
 
