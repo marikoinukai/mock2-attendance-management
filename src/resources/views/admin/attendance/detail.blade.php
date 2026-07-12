@@ -60,13 +60,6 @@
             </div>
 
             <p class="pending-message">*承認待ちのため修正はできません。</p>
-
-            <div class="detail-link-area">
-                <a class="approve-link"
-                    href="{{ route('stamp_correction_request.approve.show', $pendingCorrectionRequest->id) }}">
-                    修正申請の承認画面へ
-                </a>
-            </div>
         @else
             <form method="POST" action="{{ route('admin.attendance.update', $attendance->id) }}">
                 @csrf
