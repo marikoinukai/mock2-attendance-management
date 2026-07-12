@@ -584,8 +584,6 @@ docker compose exec --user www-data php php artisan config:clear
 docker compose exec --user www-data php php artisan migrate --env=testing
 ```
 
-## 3. 次の内容に丸ごと置き換える
-
 ### PHPUnit結果キャッシュファイルの準備
 
 PHPUnitは、テスト結果のキャッシュをコンテナ内の `/var/www/.phpunit.result.cache` に保存します。
