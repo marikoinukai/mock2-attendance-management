@@ -584,16 +584,16 @@ docker compose exec --user www-data php php artisan config:clear
 docker compose exec --user www-data php php artisan migrate --env=testing
 ```
 
+## 3. 次の内容に丸ごと置き換える
+
 ### PHPUnit結果キャッシュファイルの準備
 
-PHPUnitは、テスト結果のキャッシュを `src/.phpunit.result.cache` に保存します。
+PHPUnitは、テスト結果のキャッシュをコンテナ内の `/var/www/.phpunit.result.cache` に保存します。
 
-`www-data` ユーザーでテストを実行できるように、プロジェクト直下で以下を実行してください。
+`www-data` ユーザーで書き込めるように、プロジェクト直下で以下を実行してください。
 
 ```bash
-sudo touch src/.phpunit.result.cache
-sudo chown "$USER":www-data src/.phpunit.result.cache
-sudo chmod 664 src/.phpunit.result.cache
+docker compose exec --user root php sh -lc 'rm -f /var/www/.phpunit.result.cache && touch /var/www/.phpunit.result.cache && chown www-data:www-data /var/www/.phpunit.result.cache && chmod 664 /var/www/.phpunit.result.cache'
 ```
 
 ### テスト実行
