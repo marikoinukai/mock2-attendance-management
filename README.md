@@ -73,7 +73,7 @@ docker compose exec php php artisan key:generate
 ```bash
 sudo chown -R "$USER":www-data src/storage src/bootstrap/cache
 sudo find src/storage src/bootstrap/cache -type d -exec chmod 775 {} \;
-sudo find src/storage src/bootstrap/cache -type f -exec chmod 664 {} \;
+sudo find src/storage src/bootstrap/cache -type f ! -name '.gitignore' -exec chmod 664 {} \;
 ```
 
 6. マイグレーションを実行します。
@@ -111,7 +111,7 @@ Permission denied
 ```bash
 sudo chown -R "$USER":www-data src/storage src/bootstrap/cache
 sudo find src/storage src/bootstrap/cache -type d -exec chmod 775 {} \;
-sudo find src/storage src/bootstrap/cache -type f -exec chmod 664 {} \;
+sudo find src/storage src/bootstrap/cache -type f ! -name '.gitignore' -exec chmod 664 {} \;
 docker compose exec --user www-data php php artisan optimize:clear
 ```
 
@@ -582,6 +582,18 @@ DB_PASSWORD=root
 ```bash
 docker compose exec --user www-data php php artisan config:clear
 docker compose exec --user www-data php php artisan migrate --env=testing
+```
+
+### PHPUnit結果キャッシュファイルの準備
+
+PHPUnitは、テスト結果のキャッシュを `src/.phpunit.result.cache` に保存します。
+
+`www-data` ユーザーでテストを実行できるように、プロジェクト直下で以下を実行してください。
+
+```bash
+sudo touch src/.phpunit.result.cache
+sudo chown "$USER":www-data src/.phpunit.result.cache
+sudo chmod 664 src/.phpunit.result.cache
 ```
 
 ### テスト実行
